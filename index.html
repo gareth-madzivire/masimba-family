@@ -2,11 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>With Gratitude · Masimba Family</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Caveat:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
+    /* ----- RESET & ROOT ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      background: #1a0e0a;
+      color: #f5ebe4;
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     :root {
       --bg: #1a0e0a;
       --bg2: #2a1810;
@@ -25,17 +46,7 @@
       --radius: 20px;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Cormorant Garamond', serif;
-      background: var(--bg);
-      color: var(--text-light);
-      min-height: 100vh;
-      overflow-x: hidden;
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    /* ----- BACKGROUND (fixed, no scroll interference) ----- */
     .starfield {
       position: fixed;
       inset: 0;
@@ -78,24 +89,34 @@
       100% { opacity: 0; transform: translateY(calc(-100vh - 100px)) rotate(var(--rot, 30deg)) scale(1); }
     }
 
-    /* ---------- SCENE : fully scrollable ---------- */
+    /* ----- SCENE – FIXED FULL HEIGHT, SMOOTH SCROLLING ----- */
     .scene {
       position: fixed;
       inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: flex-start;  /* content starts at top, scrolls */
       z-index: 10;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-      padding: 20px 20px 40px;
+      padding: 16px 16px 30px;      /* comfortable padding for all screens */
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch; /* smooth iOS scrolling */
+      height: 100%;
+      width: 100%;
     }
+
     .scene.active {
       opacity: 1;
       pointer-events: auto;
+    }
+
+    /* inner wrapper – ensures flex children don't collapse */
+    .scene > * {
+      flex-shrink: 0;
+      max-width: 100%;
     }
 
     .flash-overlay {
@@ -109,20 +130,21 @@
     }
     .flash-overlay.active { opacity: 1; }
 
-    /* ---------- SCENE 1 : ENVELOPE ---------- */
+    /* ----- SCENE 1 – ENVELOPE (centered naturally) ----- */
     .envelope-wrapper {
       cursor: pointer;
       position: relative;
       animation: gentleFloat 3s ease-in-out infinite;
-      margin-top: 20px;
+      margin-top: 5vh;            /* responsive top space */
+      margin-bottom: 20px;
     }
     @keyframes gentleFloat {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-10px); }
     }
     .envelope {
-      width: min(320px, 80vw);
-      height: min(220px, 55vw);
+      width: min(300px, 80vw);
+      height: min(200px, 55vw);
       background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
       border-radius: 8px;
       position: relative;
@@ -173,31 +195,32 @@
       text-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
     .scene1-hint {
-      margin-top: 30px;
+      margin-top: 20px;
       font-family: 'Cormorant Garamond', serif;
       font-size: 20px;
       color: var(--text-muted);
       font-style: italic;
       animation: fadeInUp 1.2s ease 0.5s both;
+      text-align: center;
+      padding: 0 20px;
     }
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ---------- SCENE 2 : LETTER CARD ---------- */
+    /* ----- SCENE 2 – LETTER CARD (fully responsive) ----- */
     .letter-card {
       max-width: 760px;
-      width: 92vw;
+      width: 100%;
       background: linear-gradient(170deg, #2e1b14, #23120e);
       border: 1px solid rgba(212,149,106,0.2);
       border-radius: var(--radius);
-      padding: 34px 28px;
+      padding: 24px 20px;
       position: relative;
       overflow: hidden;
       box-shadow: var(--shadow), inset 0 1px 0 rgba(255,230,200,0.05);
-      margin-top: 20px;
-      margin-bottom: 20px;
+      margin: 20px 0;            /* top and bottom spacing */
     }
     .letter-card::before {
       content: '';
@@ -219,7 +242,7 @@
     }
     .letter-name {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(40px, 9vw, 58px);
+      font-size: clamp(38px, 8vw, 58px);
       text-align: center;
       background: linear-gradient(135deg, var(--gold), #f5d6a0);
       -webkit-background-clip: text;
@@ -229,12 +252,13 @@
       line-height: 1.1;
       opacity: 0;
       animation: fadeInUp 0.7s ease 0.1s forwards;
+      word-break: break-word;
     }
     .letter-divider {
-      width: 100px;
+      width: 80px;
       height: 1.5px;
       background: linear-gradient(90deg, transparent, var(--accent), var(--gold), var(--accent), transparent);
-      margin: 16px auto 24px;
+      margin: 12px auto 20px;
       opacity: 0;
       animation: fadeInUp 0.7s ease 0.2s forwards;
     }
@@ -242,8 +266,8 @@
     /* Masimba family message */
     .gratitude-intro {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      line-height: 1.75;
+      font-size: 17px;
+      line-height: 1.7;
       color: #f0ded5;
       margin-bottom: 18px;
       opacity: 0;
@@ -276,12 +300,12 @@
       font-weight: 400;
     }
 
-    /* ---------- CODE SECTION with DROPDOWN (no codes visible) ---------- */
+    /* ----- CODE SECTION (fully responsive) ----- */
     .code-section {
       margin-top: 24px;
       background: rgba(20,12,8,0.5);
       border-radius: 18px;
-      padding: 22px 20px;
+      padding: 22px 16px;
       backdrop-filter: blur(2px);
       opacity: 0;
       animation: fadeInUp 0.7s ease 0.5s forwards;
@@ -312,6 +336,7 @@
       letter-spacing: 0.8px;
       outline: none;
       transition: all 0.2s;
+      width: 100%;
     }
     .code-input:focus {
       border-color: var(--accent);
@@ -328,7 +353,7 @@
       background-repeat: no-repeat;
       background-position: right 18px center;
       background-size: 18px;
-      font-size: 17px; /* larger for older eyes */
+      font-size: 17px;
     }
     .reveal-btn {
       padding: 14px 26px;
@@ -344,6 +369,7 @@
       transition: transform 0.15s, box-shadow 0.2s;
       box-shadow: 0 6px 18px rgba(212,149,106,0.3);
       white-space: nowrap;
+      width: auto;
     }
     .reveal-btn:hover {
       transform: translateY(-2px);
@@ -381,7 +407,7 @@
       color: var(--gold);
     }
 
-    /* ---------- PERSONAL LETTER ---------- */
+    /* ----- PERSONAL LETTER (scrolls inside card if needed) ----- */
     .letter-container {
       margin-top: 24px;
       perspective: 800px;
@@ -398,7 +424,7 @@
     .personal-letter {
       background: var(--letter-bg);
       border-radius: 18px;
-      padding: 28px 24px;
+      padding: 24px 20px;
       position: relative;
       border-left: 6px solid var(--accent);
       box-shadow: 0 8px 24px rgba(0,0,0,0.3);
@@ -418,6 +444,7 @@
       white-space: pre-wrap;
       opacity: 0;
       animation: textFadeIn 0.8s ease 0.2s forwards;
+      word-break: break-word;
     }
     @keyframes textFadeIn {
       from { opacity: 0; }
@@ -446,7 +473,7 @@
       font-size: 16px;
     }
 
-    /* ---------- PRINT BUTTON ---------- */
+    /* ----- PRINT BUTTON ----- */
     .print-wrapper {
       margin-top: 16px;
       text-align: center;
@@ -470,29 +497,7 @@
       background: rgba(212,149,106,0.05);
     }
 
-    /* ---------- AUDIO – COMMENTED OUT ---------- */
-    /*
-    .audio-player-wrapper {
-      margin-top: 16px;
-      text-align: center;
-    }
-    audio {
-      width: 100%;
-      max-width: 280px;
-      height: 40px;
-      border-radius: 40px;
-    }
-    audio::-webkit-media-controls-panel { background-color: var(--accent-deep); }
-    audio { filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); }
-    .audio-label {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      color: var(--accent);
-      margin-top: 6px;
-    }
-    */
-
-    /* ---------- CONTINUE BUTTON ---------- */
+    /* ----- CONTINUE BUTTON ----- */
     .continue-wrapper {
       margin-top: 20px;
       text-align: center;
@@ -512,6 +517,8 @@
       cursor: pointer;
       box-shadow: 0 6px 20px rgba(232,193,122,0.4);
       transition: 0.2s;
+      width: 100%;
+      max-width: 300px;
     }
     .continue-btn:hover {
       transform: translateY(-2px);
@@ -542,15 +549,15 @@
       background: rgba(212,149,106,0.05);
     }
 
-    /* ---------- SCENE 3 – FINALE ---------- */
+    /* ----- SCENE 3 – FINALE (responsive) ----- */
     .finale-container {
       text-align: center;
       max-width: 600px;
-      margin-top: 20px;
-      margin-bottom: 40px;
+      width: 100%;
+      margin: 20px 0 40px;
     }
     .finale-heart {
-      font-size: clamp(90px, 20vw, 140px);
+      font-size: clamp(80px, 20vw, 120px);
       animation: heartBeat 1.4s ease-in-out infinite;
       display: inline-block;
       filter: drop-shadow(0 0 40px rgba(232,193,122,0.4));
@@ -566,7 +573,7 @@
     }
     .finale-text {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(42px, 10vw, 76px);
+      font-size: clamp(38px, 10vw, 72px);
       background: linear-gradient(135deg, var(--gold), var(--accent), var(--gold));
       -webkit-background-clip: text;
       background-clip: text;
@@ -574,15 +581,17 @@
       margin-bottom: 8px;
       opacity: 0;
       animation: fadeInUp 1s ease 0.3s forwards;
+      word-break: break-word;
     }
     .finale-message {
-      font-size: 22px;
+      font-size: 20px;
       color: var(--text-muted);
       font-style: italic;
       max-width: 460px;
       margin: 20px auto 0;
       opacity: 0;
       animation: fadeInUp 1s ease 0.7s forwards;
+      padding: 0 10px;
     }
     .blessing-box {
       background: rgba(212,149,106,0.1);
@@ -664,7 +673,7 @@
       animation: fadeInUp 1s ease 1.3s forwards;
     }
 
-    /* ---------- PETAL BURST ---------- */
+    /* ----- PETAL BURST ----- */
     .petal-burst {
       position: fixed;
       inset: 0;
@@ -686,21 +695,60 @@
       100% { opacity: 0; transform: translate(var(--dx,100px), var(--dy,400px)) rotate(var(--dr,360deg)) scale(0.3); }
     }
 
-    /* ---------- ACCESSIBILITY / MOBILE ---------- */
+    /* ----- MOBILE OPTIMIZATIONS (ensuring everything fits) ----- */
     @media (max-width: 480px) {
-      .input-group { flex-direction: column; }
-      .reveal-btn { width: 100%; }
-      .scene1-hint { font-size: 22px; }
+      .scene {
+        padding: 12px 12px 25px;
+      }
+      .letter-card {
+        padding: 20px 16px;
+      }
+      .input-group {
+        flex-direction: column;
+      }
+      .reveal-btn {
+        width: 100%;
+      }
+      .code-input {
+        font-size: 16px;
+        padding: 12px 16px;
+      }
+      select.code-input {
+        font-size: 16px;
+      }
+      .scene1-hint {
+        font-size: 20px;
+      }
+      .continue-btn {
+        max-width: 100%;
+      }
     }
 
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--accent-deep); border-radius: 4px; }
+    /* small height screens: give more breathing room */
+    @media (max-height: 600px) {
+      .envelope-wrapper {
+        margin-top: 10px;
+      }
+      .scene {
+        justify-content: flex-start;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent-deep);
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- SCENIC BACKGROUND -->
+  <!-- BACKGROUND -->
   <div class="starfield" id="starfield"></div>
   <div class="hearts-container" id="heartsContainer"></div>
   <div class="flash-overlay" id="flashOverlay"></div>
@@ -724,7 +772,7 @@
       <div class="letter-name">With Gratitude</div>
       <div class="letter-divider"></div>
 
-      <!-- MASIMBA UNIFYING MESSAGE – Garry & Pinkie, Gogo's pride -->
+      <!-- MASIMBA FAMILY MESSAGE -->
       <div class="gratitude-intro">
         <p style="margin-bottom: 14px;">To the Masimba Family — thank you. We have seen the sacrifices, the prayers, the support, the guidance and the love that carried us through hard seasons.</p>
         <p style="margin-bottom: 14px;">This is from both of us — <strong>Garry and Pinkie</strong> — saying: we are aware of everything you have done for us, and we have not forgotten.</p>
@@ -742,7 +790,7 @@
       <div class="code-section">
         <div class="code-label"><i class="fas fa-key"></i> YOUR PERSONAL CODE</div>
         
-        <!-- DROPDOWN: choose name, auto‑fills code (codes are not exposed) -->
+        <!-- DROPDOWN: choose name, auto-fills code (codes never visible) -->
         <div style="margin-bottom: 16px;">
           <label for="nameSelect" style="display: block; font-size: 13px; color: var(--gold); letter-spacing: 1.5px; margin-bottom: 8px; font-family: 'DM Sans', sans-serif;">
             <i class="fas fa-user" style="margin-right: 6px;"></i> Or select your name
@@ -776,7 +824,7 @@
           <div class="letter-to" id="letterTo"></div>
           <div class="letter-body" id="letterBody"></div>
           
-          <!-- AUDIO PLAYER – COMMENTED OUT (add later) -->
+          <!-- AUDIO PLAYER – COMMENTED OUT (ready for later) -->
           <!-- 
           <div class="audio-player-wrapper" id="audioPlayerContainer" style="display: none;">
             <audio id="audioPlayer" controls>
@@ -791,7 +839,7 @@
             <span class="seal-text">written with love</span>
           </div>
 
-          <!-- PRINT BUTTON (shown after message is unlocked) -->
+          <!-- PRINT BUTTON -->
           <div class="print-wrapper" id="printWrapper">
             <button class="print-btn" id="printBtn">
               <i class="fas fa-print"></i> print / save as PDF
@@ -813,7 +861,7 @@
     </div>
   </div>
 
-  <!-- SCENE 3 – GRAND FINALE with BLESSING & WHATSAPP GUESTBOOK -->
+  <!-- SCENE 3 – GRAND FINALE with BLESSING & WHATSAPP -->
   <div class="scene" id="scene3">
     <div class="finale-container">
       <div class="finale-heart">❤️</div>
@@ -823,7 +871,7 @@
         Every prayer, every sacrifice, every silent act of love — we carry it with us.
       </div>
 
-      <!-- FAMILY BLESSING (English + Shona) – warmer Shona -->
+      <!-- FAMILY BLESSING -->
       <div class="blessing-box">
         <div class="blessing-title">A Family Blessing</div>
         <div class="blessing-verse">
@@ -856,7 +904,7 @@
     (function() {
       "use strict";
 
-      // ---------- STARS ----------
+      // ----- STARS -----
       function createStars() {
         var container = document.getElementById("starfield");
         var count = Math.min(70, Math.floor(window.innerWidth * window.innerHeight / 9000));
@@ -875,7 +923,7 @@
       }
       createStars();
 
-      // ---------- HEARTS ----------
+      // ----- HEARTS -----
       var heartSymbols = ["❤️", "🧡", "💛", "🤎", "💖"];
       var heartColors = ["#d4956a", "#e8c17a", "#c49a52", "#b8734a", "#d9b48f"];
       function spawnHeart() {
@@ -897,7 +945,7 @@
       }
       setInterval(spawnHeart, 900);
 
-      // ---------- PETAL BURST ----------
+      // ----- PETAL BURST -----
       function burstPetals(x, y, count) {
         var container = document.createElement("div");
         container.className = "petal-burst";
@@ -921,7 +969,7 @@
         setTimeout(function() { container.remove(); }, 3500);
       }
 
-      // ---------- CODE MAPPING (dropdown keys → actual codes) ----------
+      // ----- CODE MAPPING (dropdown keys → actual codes) -----
       var CODE_BY_PERSON = {
         MAMA: "MAMA-4H7Q",
         MAMAMAGGIE: "MAMAMAGGIE-4P9Q",
@@ -933,12 +981,11 @@
         KUDA: "KUDA-2J6V"
       };
 
-      // ---------- MESSAGES (short codes, no audio yet) ----------
+      // ----- MESSAGES (short codes) -----
       var MESSAGES = {
         "MAMA-4H7Q": {
           name: "Mama",
           message: "Mama,\n\nYou are my pillar of strength. You have sacrificed so much — everything — for me to be here today. Without you, I honestly don’t know what or who I would be.\n\nYour prayers, your support, your love, the way you never gave up on me… it has carried me through life. I see it. I feel it. I honour it.\n\nThank you, Mama. I love you with my whole heart.\n\nWith love,\nGarry"
-          // audio: "audio/mama.mp3"
         },
         "MAMAMAGGIE-4P9Q": {
           name: "Mama Mai Maggie",
@@ -985,7 +1032,7 @@
       var printWrapper = document.getElementById('printWrapper');
       var printBtn = document.getElementById('printBtn');
 
-      // ---------- DROPDOWN: map name → code (codes never exposed) ----------
+      // ----- DROPDOWN: map name → code (codes never exposed) -----
       if (nameSelect) {
         nameSelect.addEventListener('change', function() {
           var code = CODE_BY_PERSON[this.value];
@@ -995,7 +1042,7 @@
         });
       }
 
-      // ---------- PRINT BUTTON ----------
+      // ----- PRINT BUTTON -----
       if (printBtn) {
         printBtn.addEventListener('click', function() {
           window.print();
@@ -1015,9 +1062,6 @@
         letterBody.textContent = '';
         if (continueWrapper) continueWrapper.classList.remove('show');
         if (printWrapper) printWrapper.style.display = 'none';
-        // audio container hidden if uncommented
-        // var audioContainer = document.getElementById('audioPlayerContainer');
-        // if (audioContainer) audioContainer.style.display = 'none';
       }
 
       function reveal() {
@@ -1030,20 +1074,6 @@
         showStatus('✓ Message unlocked', 'ok');
         letterTo.textContent = 'For ' + data.name;
         letterBody.textContent = data.message;
-
-        // AUDIO – uncomment when MP3s are ready
-        /*
-        var audioContainer = document.getElementById('audioPlayerContainer');
-        var audioPlayer = document.getElementById('audioPlayer');
-        if (data.audio && audioContainer && audioPlayer) {
-          audioContainer.style.display = 'block';
-          audioPlayer.src = data.audio;
-          audioPlayer.load();
-        } else if (audioContainer) {
-          audioContainer.style.display = 'none';
-          audioPlayer.src = '';
-        }
-        */
 
         letterContainer.classList.remove('show');
         void letterContainer.offsetWidth;
@@ -1059,7 +1089,7 @@
       revealBtn.addEventListener('click', reveal);
       codeInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') reveal(); });
 
-      // ---------- SCENE MANAGEMENT ----------
+      // ----- SCENE MANAGEMENT -----
       var currentScene = 1;
       function transitionTo(sceneNum) {
         var flash = document.getElementById("flashOverlay");
@@ -1070,7 +1100,6 @@
           currentScene = sceneNum;
           flash.classList.remove("active");
 
-          // AUTO-FOCUS guestbook when Scene 3 appears
           if (sceneNum === 3) {
             var el = document.querySelector(".finale-heart");
             var rect = el ? el.getBoundingClientRect() : null;
@@ -1113,14 +1142,12 @@
       document.getElementById("restartFromLetterBtn").addEventListener("click", resetToEnvelope);
       document.getElementById("restartFromFinaleBtn").addEventListener("click", resetToEnvelope);
 
-      // ---------- WHATSAPP GUESTBOOK – YOUR NUMBER IS SET ----------
+      // ----- WHATSAPP GUESTBOOK – YOUR NUMBER IS SET -----
       var whatsappBtn = document.getElementById('whatsappSendBtn');
       var guestbookMsg = document.getElementById('guestbookMessage');
       if (whatsappBtn) {
         whatsappBtn.addEventListener('click', function() {
-          // YOUR CORRECT WHATSAPP NUMBER (international format, no plus)
-          var phoneNumber = '263771308790';
-          // Safety check – if the placeholder wasn't replaced, alert
+          var phoneNumber = '263771308790'; // ✅ YOUR CORRECT NUMBER
           if (phoneNumber.includes('x') || phoneNumber === '263xxxxxxxxx') {
             alert("WhatsApp number not set yet. Please update it in the code.");
             return;
