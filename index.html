@@ -78,19 +78,19 @@
       100% { opacity: 0; transform: translateY(calc(-100vh - 100px)) rotate(var(--rot, 30deg)) scale(1); }
     }
 
-    /* ---------- SCENE : now fully scrollable (justify-content: flex-start) ---------- */
+    /* ---------- SCENE : fully scrollable ---------- */
     .scene {
       position: fixed;
       inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;  /* content starts at top, scrolls naturally */
+      justify-content: flex-start;
       z-index: 10;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-      padding: 20px 20px 40px;      /* extra bottom padding for comfortable scrolling */
+      padding: 20px 20px 40px;
       overflow-y: auto;
     }
     .scene.active {
@@ -114,7 +114,7 @@
       cursor: pointer;
       position: relative;
       animation: gentleFloat 3s ease-in-out infinite;
-      margin-top: 20px;            /* small top margin, not forced center */
+      margin-top: 20px;
     }
     @keyframes gentleFloat {
       0%, 100% { transform: translateY(0); }
@@ -196,7 +196,7 @@
       position: relative;
       overflow: hidden;
       box-shadow: var(--shadow), inset 0 1px 0 rgba(255,230,200,0.05);
-      margin-top: 20px;          /* starts from top, scrolls if tall */
+      margin-top: 20px;
       margin-bottom: 20px;
     }
     .letter-card::before {
@@ -276,7 +276,7 @@
       font-weight: 400;
     }
 
-    /* ---------- CODE SECTION with DROPDOWN ---------- */
+    /* ---------- CODE SECTION with DROPDOWN (no codes visible) ---------- */
     .code-section {
       margin-top: 24px;
       background: rgba(20,12,8,0.5);
@@ -328,6 +328,7 @@
       background-repeat: no-repeat;
       background-position: right 18px center;
       background-size: 18px;
+      font-size: 17px; /* larger for older eyes */
     }
     .reveal-btn {
       padding: 14px 26px;
@@ -445,7 +446,31 @@
       font-size: 16px;
     }
 
-    /* ---------- AUDIO – COMMENTED OUT (ready for later) ---------- */
+    /* ---------- PRINT BUTTON ---------- */
+    .print-wrapper {
+      margin-top: 16px;
+      text-align: center;
+      display: none;
+    }
+    .print-btn {
+      background: transparent;
+      border: 1px solid rgba(212,149,106,0.4);
+      color: var(--text-muted);
+      padding: 10px 26px;
+      border-radius: 40px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .print-btn:hover {
+      border-color: var(--accent);
+      color: var(--gold);
+      background: rgba(212,149,106,0.05);
+    }
+
+    /* ---------- AUDIO – COMMENTED OUT ---------- */
     /*
     .audio-player-wrapper {
       margin-top: 16px;
@@ -517,7 +542,7 @@
       background: rgba(212,149,106,0.05);
     }
 
-    /* ---------- SCENE 3 – FINALE (blessing + WhatsApp) ---------- */
+    /* ---------- SCENE 3 – FINALE ---------- */
     .finale-container {
       text-align: center;
       max-width: 600px;
@@ -661,14 +686,16 @@
       100% { opacity: 0; transform: translate(var(--dx,100px), var(--dy,400px)) rotate(var(--dr,360deg)) scale(0.3); }
     }
 
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--accent-deep); border-radius: 4px; }
-
+    /* ---------- ACCESSIBILITY / MOBILE ---------- */
     @media (max-width: 480px) {
       .input-group { flex-direction: column; }
       .reveal-btn { width: 100%; }
+      .scene1-hint { font-size: 22px; }
     }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--accent-deep); border-radius: 4px; }
   </style>
 </head>
 <body>
@@ -697,7 +724,7 @@
       <div class="letter-name">With Gratitude</div>
       <div class="letter-divider"></div>
 
-      <!-- MASIMBA UNIFYING MESSAGE – GARry & Pinkie, Gogo's pride -->
+      <!-- MASIMBA UNIFYING MESSAGE – Garry & Pinkie, Gogo's pride -->
       <div class="gratitude-intro">
         <p style="margin-bottom: 14px;">To the Masimba Family — thank you. We have seen the sacrifices, the prayers, the support, the guidance and the love that carried us through hard seasons.</p>
         <p style="margin-bottom: 14px;">This is from both of us — <strong>Garry and Pinkie</strong> — saying: we are aware of everything you have done for us, and we have not forgotten.</p>
@@ -711,25 +738,25 @@
         <span class="tag"><i class="fas fa-lock"></i> Personal</span>
       </div>
 
-      <!-- CODE SECTION with DROPDOWN -->
+      <!-- CODE SECTION with DROPDOWN (codes hidden) -->
       <div class="code-section">
         <div class="code-label"><i class="fas fa-key"></i> YOUR PERSONAL CODE</div>
         
-        <!-- DROPDOWN: choose name, auto‑fills code -->
+        <!-- DROPDOWN: choose name, auto‑fills code (codes are not exposed) -->
         <div style="margin-bottom: 16px;">
           <label for="nameSelect" style="display: block; font-size: 13px; color: var(--gold); letter-spacing: 1.5px; margin-bottom: 8px; font-family: 'DM Sans', sans-serif;">
             <i class="fas fa-user" style="margin-right: 6px;"></i> Or select your name
           </label>
           <select id="nameSelect" class="code-input" style="width: 100%;">
             <option value="" disabled selected>– choose your name –</option>
-            <option value="MAMA-4H7Q">Mama</option>
-            <option value="MAMAMAGGIE-4P9Q">Mama Mai Maggie</option>
-            <option value="MAMAJUNI-8T5M">Mama Mai Juni</option>
-            <option value="NYASHA-3F7K">Sekuru Nyasha</option>
-            <option value="EDDIE-6Q1N">Sekuru Eddie</option>
-            <option value="MAXWELL-5M7R">Sekuru Maxwell</option>
-            <option value="LONNIE-8D4X">Sekuru Lonnie</option>
-            <option value="KUDA-2J6V">Sekuru Kuda</option>
+            <option value="MAMA">Mama</option>
+            <option value="MAMAMAGGIE">Mama Mai Maggie</option>
+            <option value="MAMAJUNI">Mama Mai Juni</option>
+            <option value="NYASHA">Sekuru Nyasha</option>
+            <option value="EDDIE">Sekuru Eddie</option>
+            <option value="MAXWELL">Sekuru Maxwell</option>
+            <option value="LONNIE">Sekuru Lonnie</option>
+            <option value="KUDA">Sekuru Kuda</option>
           </select>
         </div>
 
@@ -763,6 +790,13 @@
             <div class="seal-icon">✧</div>
             <span class="seal-text">written with love</span>
           </div>
+
+          <!-- PRINT BUTTON (shown after message is unlocked) -->
+          <div class="print-wrapper" id="printWrapper">
+            <button class="print-btn" id="printBtn">
+              <i class="fas fa-print"></i> print / save as PDF
+            </button>
+          </div>
         </div>
       </div>
 
@@ -789,7 +823,7 @@
         Every prayer, every sacrifice, every silent act of love — we carry it with us.
       </div>
 
-      <!-- FAMILY BLESSING (English + Shona) -->
+      <!-- FAMILY BLESSING (English + Shona) – warmer Shona -->
       <div class="blessing-box">
         <div class="blessing-title">A Family Blessing</div>
         <div class="blessing-verse">
@@ -798,7 +832,7 @@
           <span style="font-family: 'Caveat'; font-size: 22px; color: var(--gold);">— Numbers 6:24–26</span>
         </div>
         <div class="blessing-shona">
-          Tinotenda Mwari. Gogo anofara.
+          Tinotenda Mwari. Gogo vangafara nekudada.
         </div>
       </div>
 
@@ -887,6 +921,18 @@
         setTimeout(function() { container.remove(); }, 3500);
       }
 
+      // ---------- CODE MAPPING (dropdown keys → actual codes) ----------
+      var CODE_BY_PERSON = {
+        MAMA: "MAMA-4H7Q",
+        MAMAMAGGIE: "MAMAMAGGIE-4P9Q",
+        MAMAJUNI: "MAMAJUNI-8T5M",
+        NYASHA: "NYASHA-3F7K",
+        EDDIE: "EDDIE-6Q1N",
+        MAXWELL: "MAXWELL-5M7R",
+        LONNIE: "LONNIE-8D4X",
+        KUDA: "KUDA-2J6V"
+      };
+
       // ---------- MESSAGES (short codes, no audio yet) ----------
       var MESSAGES = {
         "MAMA-4H7Q": {
@@ -936,13 +982,23 @@
       var continueWrapper = document.getElementById('continueWrapper');
       var toFinaleBtn = document.getElementById('toFinaleBtn');
       var nameSelect = document.getElementById('nameSelect');
+      var printWrapper = document.getElementById('printWrapper');
+      var printBtn = document.getElementById('printBtn');
 
-      // DROPDOWN auto-fill code
+      // ---------- DROPDOWN: map name → code (codes never exposed) ----------
       if (nameSelect) {
         nameSelect.addEventListener('change', function() {
-          codeInput.value = this.value;
-          // optional: auto-reveal – uncomment next line if desired
+          var code = CODE_BY_PERSON[this.value];
+          if (code) codeInput.value = code;
+          // optional auto-reveal – uncomment next line if desired
           // setTimeout(reveal, 100);
+        });
+      }
+
+      // ---------- PRINT BUTTON ----------
+      if (printBtn) {
+        printBtn.addEventListener('click', function() {
+          window.print();
         });
       }
 
@@ -958,6 +1014,7 @@
         letterTo.textContent = '';
         letterBody.textContent = '';
         if (continueWrapper) continueWrapper.classList.remove('show');
+        if (printWrapper) printWrapper.style.display = 'none';
         // audio container hidden if uncommented
         // var audioContainer = document.getElementById('audioPlayerContainer');
         // if (audioContainer) audioContainer.style.display = 'none';
@@ -996,6 +1053,7 @@
         letterBody.style.animation = 'textFadeIn 0.8s ease 0.2s forwards';
 
         if (continueWrapper) continueWrapper.classList.add('show');
+        if (printWrapper) printWrapper.style.display = 'block';
       }
 
       revealBtn.addEventListener('click', reveal);
@@ -1011,10 +1069,16 @@
           document.getElementById("scene" + sceneNum).classList.add("active");
           currentScene = sceneNum;
           flash.classList.remove("active");
+
+          // AUTO-FOCUS guestbook when Scene 3 appears
           if (sceneNum === 3) {
             var el = document.querySelector(".finale-heart");
             var rect = el ? el.getBoundingClientRect() : null;
             if (rect) burstPetals(rect.left + rect.width/2, rect.top + rect.height/2, 42);
+            setTimeout(function() {
+              var box = document.getElementById("guestbookMessage");
+              if (box) box.focus();
+            }, 600);
           }
         }, 380);
       }
@@ -1049,17 +1113,22 @@
       document.getElementById("restartFromLetterBtn").addEventListener("click", resetToEnvelope);
       document.getElementById("restartFromFinaleBtn").addEventListener("click", resetToEnvelope);
 
-      // ---------- WHATSAPP GUESTBOOK ----------
+      // ---------- WHATSAPP GUESTBOOK – YOUR NUMBER IS SET ----------
       var whatsappBtn = document.getElementById('whatsappSendBtn');
       var guestbookMsg = document.getElementById('guestbookMessage');
       if (whatsappBtn) {
         whatsappBtn.addEventListener('click', function() {
+          // YOUR CORRECT WHATSAPP NUMBER (international format, no plus)
+          var phoneNumber = '263771308790';
+          // Safety check – if the placeholder wasn't replaced, alert
+          if (phoneNumber.includes('x') || phoneNumber === '263xxxxxxxxx') {
+            alert("WhatsApp number not set yet. Please update it in the code.");
+            return;
+          }
           var text = guestbookMsg.value.trim();
           if (text === '') {
             text = 'Thank you, Garry & Pinkie! Love and blessings from the Masimba Family ❤️';
           }
-          // REPLACE WITH YOUR REAL WHATSAPP NUMBER (international format, no plus)
-          var phoneNumber = '263xxxxxxxxx'; // <--- CHANGE THIS
           var url = 'https://wa.me/' + phoneNumber + '?text=' + encodeURIComponent(text);
           window.open(url, '_blank');
         });
