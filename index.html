@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>With Gratitude · Masimba Family</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Caveat:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -96,14 +96,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;  /* content starts at top, scrolls */
+      justify-content: flex-start;
       z-index: 10;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-      padding: 16px 16px 30px;      /* comfortable padding for all screens */
+      padding: 16px 16px 30px;
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch; /* smooth iOS scrolling */
+      -webkit-overflow-scrolling: touch;
       height: 100%;
       width: 100%;
     }
@@ -113,7 +113,6 @@
       pointer-events: auto;
     }
 
-    /* inner wrapper – ensures flex children don't collapse */
     .scene > * {
       flex-shrink: 0;
       max-width: 100%;
@@ -130,12 +129,12 @@
     }
     .flash-overlay.active { opacity: 1; }
 
-    /* ----- SCENE 1 – ENVELOPE (centered naturally) ----- */
+    /* ----- SCENE 1 – ENVELOPE ----- */
     .envelope-wrapper {
       cursor: pointer;
       position: relative;
       animation: gentleFloat 3s ease-in-out infinite;
-      margin-top: 5vh;            /* responsive top space */
+      margin-top: 5vh;
       margin-bottom: 20px;
     }
     @keyframes gentleFloat {
@@ -209,7 +208,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ----- SCENE 2 – LETTER CARD (fully responsive) ----- */
+    /* ----- SCENE 2 – LETTER CARD ----- */
     .letter-card {
       max-width: 760px;
       width: 100%;
@@ -220,7 +219,7 @@
       position: relative;
       overflow: hidden;
       box-shadow: var(--shadow), inset 0 1px 0 rgba(255,230,200,0.05);
-      margin: 20px 0;            /* top and bottom spacing */
+      margin: 20px 0;
     }
     .letter-card::before {
       content: '';
@@ -300,7 +299,7 @@
       font-weight: 400;
     }
 
-    /* ----- CODE SECTION (fully responsive) ----- */
+    /* ----- CODE SECTION (dropdown does NOT auto-fill) ----- */
     .code-section {
       margin-top: 24px;
       background: rgba(20,12,8,0.5);
@@ -407,7 +406,7 @@
       color: var(--gold);
     }
 
-    /* ----- PERSONAL LETTER (scrolls inside card if needed) ----- */
+    /* ----- PERSONAL LETTER ----- */
     .letter-container {
       margin-top: 24px;
       perspective: 800px;
@@ -549,7 +548,7 @@
       background: rgba(212,149,106,0.05);
     }
 
-    /* ----- SCENE 3 – FINALE (responsive) ----- */
+    /* ----- SCENE 3 – FINALE ----- */
     .finale-container {
       text-align: center;
       max-width: 600px;
@@ -695,7 +694,52 @@
       100% { opacity: 0; transform: translate(var(--dx,100px), var(--dy,400px)) rotate(var(--dr,360deg)) scale(0.3); }
     }
 
-    /* ----- MOBILE OPTIMIZATIONS (ensuring everything fits) ----- */
+    /* ----- PRINT STYLES – clean letter only ----- */
+    @media print {
+      body { 
+        background: white !important; 
+        color: black !important; 
+      }
+      .starfield, .hearts-container, .flash-overlay,
+      #scene1, #scene3, .scene1-hint,
+      .code-section, .family-tags,
+      .continue-wrapper, .back-to-envelope {
+        display: none !important;
+      }
+      #scene2 {
+        position: static !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        overflow: visible !important;
+        background: transparent !important;
+        padding: 0 !important;
+      }
+      .letter-card {
+        box-shadow: none !important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .personal-letter {
+        box-shadow: none !important;
+        border-left: 6px solid #d4956a !important;
+        background: white !important;
+        color: black !important;
+        padding: 20px !important;
+      }
+      .letter-body {
+        color: black !important;
+      }
+      .letter-to {
+        color: #b8734a !important;
+      }
+      .print-wrapper {
+        display: none !important;
+      }
+    }
+
+    /* ----- MOBILE OPTIMIZATIONS ----- */
     @media (max-width: 480px) {
       .scene {
         padding: 12px 12px 25px;
@@ -724,13 +768,9 @@
       }
     }
 
-    /* small height screens: give more breathing room */
     @media (max-height: 600px) {
       .envelope-wrapper {
         margin-top: 10px;
-      }
-      .scene {
-        justify-content: flex-start;
       }
     }
 
@@ -786,17 +826,17 @@
         <span class="tag"><i class="fas fa-lock"></i> Personal</span>
       </div>
 
-      <!-- CODE SECTION with DROPDOWN (codes hidden) -->
+      <!-- CODE SECTION with DROPDOWN – does NOT auto-fill code -->
       <div class="code-section">
         <div class="code-label"><i class="fas fa-key"></i> YOUR PERSONAL CODE</div>
         
-        <!-- DROPDOWN: choose name, auto-fills code (codes never visible) -->
+        <!-- DROPDOWN: choose name (just a reference – code must be typed manually) -->
         <div style="margin-bottom: 16px;">
           <label for="nameSelect" style="display: block; font-size: 13px; color: var(--gold); letter-spacing: 1.5px; margin-bottom: 8px; font-family: 'DM Sans', sans-serif;">
-            <i class="fas fa-user" style="margin-right: 6px;"></i> Or select your name
+            <i class="fas fa-user" style="margin-right: 6px;"></i> Who are you?
           </label>
           <select id="nameSelect" class="code-input" style="width: 100%;">
-            <option value="" disabled selected>– choose your name –</option>
+            <option value="" disabled selected>– select your name (for reference) –</option>
             <option value="MAMA">Mama</option>
             <option value="MAMAMAGGIE">Mama Mai Maggie</option>
             <option value="MAMAJUNI">Mama Mai Juni</option>
@@ -813,7 +853,7 @@
           <button class="reveal-btn" id="revealBtn"><i class="fas fa-envelope-open-text"></i> OPEN</button>
         </div>
         <div class="code-helper">
-          <i class="fas fa-question-circle"></i> Don’t have your code? Send me a message and I’ll give it to you privately.
+          <i class="fas fa-question-circle"></i> Don’t have your code? Please message Garry and I’ll send it to you privately ❤️
         </div>
         <div id="status" class="status"></div>
       </div>
@@ -969,7 +1009,7 @@
         setTimeout(function() { container.remove(); }, 3500);
       }
 
-      // ----- CODE MAPPING (dropdown keys → actual codes) -----
+      // ----- CODE MAPPING (used only for reference – dropdown does NOT auto-fill) -----
       var CODE_BY_PERSON = {
         MAMA: "MAMA-4H7Q",
         MAMAMAGGIE: "MAMAMAGGIE-4P9Q",
@@ -1032,13 +1072,15 @@
       var printWrapper = document.getElementById('printWrapper');
       var printBtn = document.getElementById('printBtn');
 
-      // ----- DROPDOWN: map name → code (codes never exposed) -----
+      // ----- DROPDOWN: purely informational – does NOT fill the code -----
       if (nameSelect) {
         nameSelect.addEventListener('change', function() {
-          var code = CODE_BY_PERSON[this.value];
-          if (code) codeInput.value = code;
-          // optional auto-reveal – uncomment next line if desired
-          // setTimeout(reveal, 100);
+          // No auto-fill – user must type the code manually
+          // Optional: show a hint that they need to type the code
+          var selectedName = this.options[this.selectedIndex]?.text;
+          if (selectedName && !selectedName.includes('select')) {
+            // You could briefly display a message, but we keep it silent
+          }
         });
       }
 
@@ -1048,6 +1090,10 @@
           window.print();
         });
       }
+
+      // ----- RATE LIMITING (prevents brute force guessing) -----
+      var attempts = 0;
+      var lockUntil = 0;
 
       function showStatus(text, kind) {
         statusEl.className = 'status ' + kind;
@@ -1065,11 +1111,35 @@
       }
 
       function reveal() {
+        var now = Date.now();
+        if (now < lockUntil) {
+          var seconds = Math.ceil((lockUntil - now) / 1000);
+          showStatus('Too many wrong attempts. Please wait ' + seconds + ' seconds.', 'err');
+          return;
+        }
+
         clearReveal();
         var code = normalizeCode(codeInput.value);
-        if (!code) { showStatus('Please enter your code.', 'err'); return; }
+        if (!code) { 
+          showStatus('Please enter your code.', 'err'); 
+          return; 
+        }
+
         var data = MESSAGES[code];
-        if (!data) { showStatus('That code doesn’t match any message. Double-check and try again.', 'err'); return; }
+        if (!data) {
+          attempts++;
+          if (attempts >= 5) {
+            lockUntil = Date.now() + 30000; // 30 seconds lockout
+            attempts = 0;
+            showStatus('Too many wrong tries. Please wait 30 seconds.', 'err');
+            return;
+          }
+          showStatus('That code doesn’t match any message. Double-check and try again.', 'err');
+          return;
+        }
+
+        // success – reset attempts
+        attempts = 0;
 
         showStatus('✓ Message unlocked', 'ok');
         letterTo.textContent = 'For ' + data.name;
@@ -1087,9 +1157,11 @@
       }
 
       revealBtn.addEventListener('click', reveal);
-      codeInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') reveal(); });
+      codeInput.addEventListener('keydown', function(e) { 
+        if (e.key === 'Enter') reveal(); 
+      });
 
-      // ----- SCENE MANAGEMENT -----
+      // ----- SCENE MANAGEMENT (smooth transitions) -----
       var currentScene = 1;
       function transitionTo(sceneNum) {
         var flash = document.getElementById("flashOverlay");
@@ -1112,7 +1184,7 @@
         }, 380);
       }
 
-      // Envelope click
+      // Envelope click – open and transition to Scene 2
       var envelopeWrapper = document.getElementById("envelopeWrapper");
       envelopeWrapper.addEventListener("click", function(e) {
         if (envelopeWrapper.classList.contains("opened")) return;
@@ -1121,26 +1193,33 @@
         setTimeout(function() { transitionTo(2); }, 800);
       });
       envelopeWrapper.addEventListener("keydown", function(e) {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); envelopeWrapper.click(); }
+        if (e.key === "Enter" || e.key === " ") { 
+          e.preventDefault(); 
+          envelopeWrapper.click(); 
+        }
       });
 
       // Continue to Scene 3
       if (toFinaleBtn) {
-        toFinaleBtn.addEventListener("click", function() { transitionTo(3); });
+        toFinaleBtn.addEventListener("click", function() { 
+          transitionTo(3); 
+        });
       }
 
-      // Reset to envelope
-      function resetToEnvelope() {
-        document.getElementById("scene2").classList.remove("active");
-        document.getElementById("scene1").classList.add("active");
+      // ----- RESTART – smooth transition back to Scene 1 -----
+      function restartToEnvelope() {
+        // Reset envelope flap
         envelopeWrapper.classList.remove("opened");
-        currentScene = 1;
+        // Clear code input and any revealed letter
         codeInput.value = '';
         clearReveal();
         if (nameSelect) nameSelect.selectedIndex = 0;
+        // Smooth transition to Scene 1
+        transitionTo(1);
       }
-      document.getElementById("restartFromLetterBtn").addEventListener("click", resetToEnvelope);
-      document.getElementById("restartFromFinaleBtn").addEventListener("click", resetToEnvelope);
+
+      document.getElementById("restartFromLetterBtn").addEventListener("click", restartToEnvelope);
+      document.getElementById("restartFromFinaleBtn").addEventListener("click", restartToEnvelope);
 
       // ----- WHATSAPP GUESTBOOK – YOUR NUMBER IS SET -----
       var whatsappBtn = document.getElementById('whatsappSendBtn');
