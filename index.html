@@ -2,941 +2,878 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
   <title>With Gratitude · Masimba Family</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Caveat:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
   <style>
-    /* ----- RESET & ROOT ----- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --bg: #110907;
+      --bg-card: #1e120d;
+      --bg-inner: rgba(30,18,13,.7);
+      --bg-code: rgba(12,7,5,.55);
+      --text: #f5ebe4;
+      --text-sub: #d4bfb2;
+      --text-muted: #9a8072;
+      --accent: #d4956a;
+      --accent-deep: #b06838;
+      --gold: #e8c17a;
+      --gold-dim: rgba(232,193,122,.12);
+      --gold-glow: rgba(232,193,122,.25);
+      --rose: #d98a8a;
+      --ok: #8cc9a0;
+      --ok-bg: rgba(140,201,160,.1);
+      --ok-border: rgba(140,201,160,.28);
+      --err: #d98a8a;
+      --err-bg: rgba(217,138,138,.1);
+      --err-border: rgba(217,138,138,.28);
+      --letter-bg: #faf5ee;
+      --letter-text: #3d2b1f;
+      --letter-accent: #b06838;
+      --letter-muted: #8a6e5e;
+      --shadow-strong: 0 24px 80px rgba(0,0,0,.6);
+      --shadow-soft: 0 8px 30px rgba(0,0,0,.3);
+      --radius: 22px;
+      --radius-sm: 14px;
+      --transition: cubic-bezier(.23,1,.32,1);
     }
 
-    html, body {
-      height: 100%;
-      width: 100%;
-      overflow-x: hidden;
+    html:not(.dark) {
+      --bg: #f4ece4;
+      --bg-card: #ffffff;
+      --bg-inner: rgba(255,255,255,.85);
+      --bg-code: rgba(244,236,228,.7);
+      --text: #3d2b1f;
+      --text-sub: #6e5545;
+      --text-muted: #9a8072;
+      --accent: #b06838;
+      --accent-deep: #8e5228;
+      --gold: #b8903e;
+      --gold-dim: rgba(184,144,62,.1);
+      --gold-glow: rgba(184,144,62,.18);
+      --rose: #c06060;
+      --ok: #5a8a68;
+      --ok-bg: rgba(90,138,104,.08);
+      --ok-border: rgba(90,138,104,.22);
+      --err: #c06060;
+      --err-bg: rgba(192,96,96,.08);
+      --err-border: rgba(192,96,96,.22);
+      --letter-bg: #fffcf8;
+      --letter-text: #3d2b1f;
+      --letter-accent: #b06838;
+      --letter-muted: #8a6e5e;
+      --shadow-strong: 0 24px 80px rgba(0,0,0,.08);
+      --shadow-soft: 0 8px 30px rgba(0,0,0,.05);
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; width: 100%; overflow-x: hidden; }
 
     body {
-      font-family: 'Cormorant Garamond', serif;
-      background: #1a0e0a;
-      color: #f5ebe4;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       -webkit-tap-highlight-color: transparent;
     }
 
-    :root {
-      --bg: #1a0e0a;
-      --bg2: #2a1810;
-      --card-bg: #2e1b14;
-      --accent: #d4956a;
-      --accent-deep: #b8734a;
-      --gold: #e8c17a;
-      --gold-soft: rgba(232,193,122,.15);
-      --text-light: #f5ebe4;
-      --text-muted: #c4a998;
-      --envelope-glow: rgba(212,149,106,.4);
-      --letter-bg: #fdfaf6;
-      --letter-text: #3d2b1f;
-      --letter-muted: #8a6e5e;
-      --shadow: 0 20px 60px rgba(0,0,0,.6);
-      --radius: 20px;
+    /* ----- AMBIENT BACKGROUND ----- */
+    .bg-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .bg-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); opacity: .35;
     }
+    .bg-orb-1 { width: 500px; height: 500px; top: -120px; left: -80px; background: radial-gradient(circle, rgba(212,149,106,.3), transparent 70%); animation: orbDrift1 22s ease-in-out infinite; }
+    .bg-orb-2 { width: 400px; height: 400px; bottom: -80px; right: -60px; background: radial-gradient(circle, rgba(232,193,122,.2), transparent 70%); animation: orbDrift2 28s ease-in-out infinite; }
+    .bg-orb-3 { width: 300px; height: 300px; top: 40%; left: 50%; background: radial-gradient(circle, rgba(217,138,138,.12), transparent 70%); animation: orbDrift3 25s ease-in-out infinite; }
+    @keyframes orbDrift1 { 0%,100% { transform:translate(0,0) scale(1); } 50% { transform:translate(60px,40px) scale(1.15); } }
+    @keyframes orbDrift2 { 0%,100% { transform:translate(0,0) scale(1); } 50% { transform:translate(-50px,-30px) scale(1.1); } }
+    @keyframes orbDrift3 { 0%,100% { transform:translate(-50%,0) scale(1); } 50% { transform:translate(-40%,30px) scale(1.2); } }
 
-    /* ----- BACKGROUND (fixed, no scroll interference) ----- */
-    .starfield {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
     .star {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(232, 193, 122, 0.5);
+      position: absolute; border-radius: 50%;
+      background: rgba(232,193,122,.5);
       animation: twinkle var(--dur) ease-in-out infinite alternate;
     }
-    @keyframes twinkle {
-      0% { opacity: 0.2; transform: scale(0.8); }
-      100% { opacity: 1; transform: scale(1.2); }
-    }
+    html:not(.dark) .star { background: rgba(184,144,62,.25); }
+    @keyframes twinkle { 0% { opacity:.15; transform:scale(.7); } 100% { opacity:.9; transform:scale(1.3); } }
 
-    .hearts-container {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .floating-heart {
-      position: absolute;
-      bottom: -60px;
-      color: var(--accent);
+    .hearts-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .fheart {
+      position: absolute; bottom: -50px;
       opacity: 0;
-      animation: floatUp var(--dur) ease-in forwards;
+      animation: heartRise var(--dur) ease-in forwards;
       animation-delay: var(--delay);
-      font-size: var(--size);
-      filter: blur(var(--blur, 0px));
     }
-    @keyframes floatUp {
-      0% { opacity: 0; transform: translateY(0) rotate(0deg) scale(0.5); }
-      15% { opacity: var(--peak-opacity, 0.6); }
-      85% { opacity: var(--peak-opacity, 0.6); }
-      100% { opacity: 0; transform: translateY(calc(-100vh - 100px)) rotate(var(--rot, 30deg)) scale(1); }
+    @keyframes heartRise {
+      0% { opacity:0; transform:translateY(0) rotate(0) scale(.4); }
+      12% { opacity:var(--peak,.5); }
+      80% { opacity:var(--peak,.5); }
+      100% { opacity:0; transform:translateY(calc(-100vh - 80px)) rotate(var(--rot,25deg)) scale(.9); }
     }
 
-    /* ----- SCENE – FIXED FULL HEIGHT, SMOOTH SCROLLING ----- */
+    .scene-flash { position: fixed; inset: 0; z-index: 50; background: radial-gradient(circle at center, var(--gold-glow), transparent 70%); opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+    .scene-flash.on { opacity: 1; }
+
+    /* ----- TOAST ----- */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--bg-card);
+      border: 1px solid var(--gold-dim);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 500;
+      padding: 12px 24px; border-radius: 40px;
+      box-shadow: var(--shadow-soft);
+      z-index: 200;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s, transform .3s var(--transition);
+    }
+    .toast.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+
+    /* ----- SCENE SYSTEM (scrollable) ----- */
     .scene {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
       z-index: 10;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-      padding: 16px 16px 30px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .65s var(--transition);
+      padding: 20px 16px 40px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      height: 100%;
-      width: 100%;
+    }
+    .scene.active { opacity: 1; pointer-events: auto; }
+    .scene > * { flex-shrink: 0; max-width: 100%; }
+
+    /* ----- WELCOME OVERLAY (personalized) ----- */
+    .welcome-overlay {
+      position: fixed; inset: 0;
+      background: radial-gradient(circle at center, rgba(212,149,106,0.2), #110907);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 2000;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .welcome-overlay.active { opacity: 1; pointer-events: auto; }
+    .welcome-message {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(32px, 8vw, 56px);
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(232,193,122,0.5);
+      margin-bottom: 16px;
+    }
+    .welcome-sub {
+      font-family: 'Caveat', cursive;
+      font-size: 22px;
+      color: var(--text-sub);
     }
 
-    .scene.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .scene > * {
-      flex-shrink: 0;
-      max-width: 100%;
-    }
-
-    .flash-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      background: radial-gradient(circle at center, rgba(212,149,106,0.2), transparent);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-    .flash-overlay.active { opacity: 1; }
-
-    /* ----- SCENE 1 – ENVELOPE ----- */
-    .envelope-wrapper {
+    /* ----- SCENE 1 — ENVELOPE ----- */
+    .env-wrap {
       cursor: pointer;
-      position: relative;
-      animation: gentleFloat 3s ease-in-out infinite;
-      margin-top: 5vh;
-      margin-bottom: 20px;
+      margin-top: clamp(8vh, 12vh, 16vh);
+      margin-bottom: 24px;
+      animation: envFloat 3.5s ease-in-out infinite;
+      outline: none;
     }
-    @keyframes gentleFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
+    .env-wrap:focus-visible { outline: 2px solid var(--gold); outline-offset: 12px; border-radius: 8px; }
+    @keyframes envFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-12px); } }
     .envelope {
-      width: min(300px, 80vw);
-      height: min(200px, 55vw);
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
-      border-radius: 8px;
+      width: min(320px, 82vw);
+      aspect-ratio: 3/2;
+      background: linear-gradient(145deg, var(--accent) 0%, var(--accent-deep) 100%);
+      border-radius: 10px;
       position: relative;
-      box-shadow: 0 20px 60px var(--envelope-glow), 0 0 80px rgba(232,193,122,0.1);
-      transition: transform 0.3s ease;
+      box-shadow: 0 20px 60px rgba(212,149,106,.35), 0 0 120px rgba(232,193,122,.08);
+      transition: transform .25s ease;
     }
-    .envelope:hover { transform: scale(1.02); }
-    .envelope-flap {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 50%;
-      background: linear-gradient(160deg, var(--accent-deep), #a56644);
+    .envelope:hover { transform: scale(1.03); }
+    .env-flap {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 52%;
+      background: linear-gradient(165deg, var(--accent-deep), #8e5228);
       clip-path: polygon(0 0, 50% 100%, 100% 0);
-      z-index: 2;
-      transform-origin: top center;
-      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 2; transform-origin: top center;
+      transition: transform .7s cubic-bezier(.34,1.56,.64,1);
     }
-    .envelope-wrapper.opened .envelope-flap {
-      transform: rotateX(180deg);
+    .env-wrap.opened .env-flap { transform: rotateX(180deg); }
+    .env-paper {
+      position: absolute; top: 8%; left: 12%; right: 12%;
+      height: 50%;
+      background: linear-gradient(180deg, #faf5ee, #f0e6d8);
+      border-radius: 4px 4px 0 0;
+      z-index: 1;
+      transform: translateY(0);
+      transition: transform .6s var(--transition) .15s;
     }
-    .envelope-heart {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+    .env-wrap.opened .env-paper { transform: translateY(-30%); }
+    .env-seal {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
       z-index: 3;
-      font-size: 42px;
-      color: var(--gold);
-      filter: drop-shadow(0 0 12px rgba(232,193,122,0.5));
-      animation: heartPulse 1.8s ease-in-out infinite;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 35%, #e8c17a 0%, #c49a3a 40%, #a07828 80%, #8a6520 100%);
+      box-shadow: 0 4px 16px rgba(0,0,0,.35), inset 0 2px 4px rgba(255,230,170,.4), inset 0 -2px 6px rgba(0,0,0,.2);
+      display: flex; align-items: center; justify-content: center;
+      animation: sealPulse 2.5s ease-in-out infinite;
     }
-    @keyframes heartPulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.1); }
-    }
-    .envelope-seal {
-      position: absolute;
-      bottom: 18px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: 'Great Vibes', cursive;
-      color: var(--gold);
-      font-size: 20px;
-      letter-spacing: 2px;
-      opacity: 0.9;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-    }
-    .scene1-hint {
-      margin-top: 20px;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      color: var(--text-muted);
-      font-style: italic;
-      animation: fadeInUp 1.2s ease 0.5s both;
-      text-align: center;
-      padding: 0 20px;
-    }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .env-seal-letter { font-family: 'Great Vibes', cursive; font-size: 26px; color: #3d2200; text-shadow: 0 1px 1px rgba(255,255,255,.2); }
+    @keyframes sealPulse { 0%,100% { box-shadow: 0 4px 16px rgba(0,0,0,.35), 0 0 0 0 rgba(232,193,122,.3); } 50% { box-shadow: 0 4px 16px rgba(0,0,0,.35), 0 0 0 12px rgba(232,193,122,0); } }
+    .env-label { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-family: 'Great Vibes', cursive; font-size: 17px; color: rgba(255,240,220,.7); letter-spacing: 1px; text-shadow: 0 1px 3px rgba(0,0,0,.3); }
+    .s1-hint { font-family: 'Cormorant Garamond', serif; font-size: clamp(17px, 3vw, 21px); font-style: italic; color: var(--text-muted); text-align: center; padding: 0 24px; opacity: 0; animation: fadeUp .8s ease .4s forwards; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
 
-    /* ----- SCENE 2 – LETTER CARD ----- */
+    /* ----- SCENE 2 — LETTER CARD ----- */
     .letter-card {
-      max-width: 760px;
-      width: 100%;
-      background: linear-gradient(170deg, #2e1b14, #23120e);
-      border: 1px solid rgba(212,149,106,0.2);
+      max-width: 820px; width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--gold-dim);
       border-radius: var(--radius);
-      padding: 24px 20px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,230,200,0.05);
-      margin: 20px 0;
+      padding: clamp(24px,4vw,40px) clamp(20px,3.5vw,36px);
+      position: relative; overflow: hidden;
+      box-shadow: var(--shadow-strong);
+      margin: 24px 0;
     }
-    .letter-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(ellipse at 30% 20%, rgba(212,149,106,0.06) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .letter-ornament {
-      text-align: center;
+    .letter-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--gold), var(--accent)); }
+    .letter-card::after { content: ''; position: absolute; top: -50%; left: -30%; width: 160%; height: 160%; background: radial-gradient(ellipse at 30% 20%, var(--gold-dim), transparent 55%); pointer-events: none; }
+    .lc-ornament { text-align: center; font-size: 20px; color: var(--gold); letter-spacing: 12px; margin-bottom: 8px; opacity: 0; animation: fadeUp .6s ease forwards; }
+    .lc-title { font-family: 'Great Vibes', cursive; font-size: clamp(36px, 8vw, 56px); text-align: center; background: linear-gradient(135deg, var(--gold), #f5d8a4, var(--gold)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.15; margin-bottom: 4px; opacity: 0; animation: fadeUp .6s ease .1s forwards; }
+    html:not(.dark) .lc-title { background: linear-gradient(135deg, var(--accent-deep), var(--gold), var(--accent-deep)); -webkit-background-clip: text; background-clip: text; }
+    .lc-divider { width: 90px; height: 1.5px; margin: 14px auto 22px; background: linear-gradient(90deg, transparent, var(--accent), var(--gold), var(--accent), transparent); opacity: 0; animation: fadeUp .6s ease .2s forwards; }
+
+    .greeting {
+      font-size: 18px;
       color: var(--gold);
-      font-size: 24px;
+      font-style: italic;
       margin-bottom: 12px;
-      opacity: 0;
-      animation: fadeInUp 0.7s ease forwards;
-    }
-    .letter-name {
-      font-family: 'Great Vibes', cursive;
-      font-size: clamp(38px, 8vw, 58px);
       text-align: center;
-      background: linear-gradient(135deg, var(--gold), #f5d6a0);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 4px;
-      line-height: 1.1;
       opacity: 0;
-      animation: fadeInUp 0.7s ease 0.1s forwards;
-      word-break: break-word;
-    }
-    .letter-divider {
-      width: 80px;
-      height: 1.5px;
-      background: linear-gradient(90deg, transparent, var(--accent), var(--gold), var(--accent), transparent);
-      margin: 12px auto 20px;
-      opacity: 0;
-      animation: fadeInUp 0.7s ease 0.2s forwards;
+      animation: fadeUp .6s ease .25s forwards;
     }
 
-    /* Masimba family message */
-    .gratitude-intro {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 17px;
-      line-height: 1.7;
-      color: #f0ded5;
-      margin-bottom: 18px;
-      opacity: 0;
-      animation: fadeInUp 0.7s ease 0.3s forwards;
+    .intro-text {
+      font-size: clamp(16px, 2.2vw, 18px);
+      line-height: 1.75;
+      color: var(--text-sub);
+      margin-bottom: 14px;
+      position: relative; z-index: 1;
     }
-    .gratitude-intro strong {
-      color: var(--gold);
-      font-weight: 600;
+    .intro-text strong { color: var(--gold); font-weight: 600; }
+
+    .lang-toggle {
+      display: flex; align-items: center; gap: 10px;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+    }
+    .lang-btn {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--text-muted);
+      padding: 4px 14px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .lang-btn.active {
+      background: var(--accent);
+      color: #1a0e0a;
+      border-color: var(--accent);
     }
 
-    .family-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 16px 0 10px;
-      opacity: 0;
-      animation: fadeInUp 0.7s ease 0.4s forwards;
+    .tags {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin: 18px 0 6px;
+      position: relative; z-index: 1;
+      opacity: 0; animation: fadeUp .6s ease .5s forwards;
     }
     .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 14px;
-      border-radius: 999px;
-      background: rgba(232,193,122,0.08);
-      border: 1px solid rgba(212,149,106,0.2);
-      color: #e1cfc0;
-      font-size: 13px;
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 6px 15px; border-radius: 999px;
+      background: var(--gold-dim);
+      border: 1px solid rgba(212,149,106,.15);
+      color: var(--text-sub);
       font-family: 'DM Sans', sans-serif;
-      font-weight: 400;
+      font-size: 12.5px; font-weight: 500;
     }
+    .tag i { font-size: 11px; color: var(--accent); }
 
-    /* ----- CODE SECTION (dropdown does NOT auto-fill) ----- */
     .code-section {
-      margin-top: 24px;
-      background: rgba(20,12,8,0.5);
+      margin-top: 28px;
+      background: var(--bg-code);
       border-radius: 18px;
-      padding: 22px 16px;
-      backdrop-filter: blur(2px);
-      opacity: 0;
-      animation: fadeInUp 0.7s ease 0.5s forwards;
+      padding: clamp(20px,3vw,28px);
+      position: relative; z-index: 1;
+      border: 1px solid var(--gold-dim);
+      opacity: 0; animation: fadeUp .6s ease .55s forwards;
     }
-    .code-label {
+    .code-heading {
       font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
+      font-size: 11px; font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--gold);
-      margin-bottom: 12px;
+      letter-spacing: 2.5px;
+      color: var(--accent);
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px;
     }
-    .input-group {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+    .code-heading::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(212,149,106,.2), transparent); }
+
+    .field-label {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
     }
-    .code-input {
-      flex: 1 1 200px;
+    .field-label i { color: var(--accent); margin-right: 4px; }
+
+    .styled-select, .code-input {
+      width: 100%;
       padding: 14px 18px;
       border-radius: 40px;
-      border: 1.5px solid rgba(212,149,106,0.3);
-      background: rgba(0,0,0,0.3);
-      color: var(--text-light);
+      border: 1.5px solid rgba(212,149,106,.22);
+      background: var(--bg-inner);
+      color: var(--text);
       font-family: 'DM Sans', sans-serif;
       font-size: 16px;
-      font-weight: 400;
-      letter-spacing: 0.8px;
       outline: none;
-      transition: all 0.2s;
-      width: 100%;
+      transition: border-color .2s, box-shadow .2s;
     }
-    .code-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(212,149,106,0.2);
-    }
-    .code-input::placeholder {
-      color: #a48c7e;
-      font-weight: 300;
-      letter-spacing: 0.3px;
-    }
-    select.code-input {
+    .styled-select:focus, .code-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--gold-glow); }
+    .styled-select {
       appearance: none;
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='white'><path d='M7 10l5 5 5-5z'/></svg>");
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='%239a8072'><path d='M7 10l5 5 5-5z'/></svg>");
       background-repeat: no-repeat;
-      background-position: right 18px center;
+      background-position: right 16px center;
       background-size: 18px;
-      font-size: 17px;
+      cursor: pointer;
     }
+    .styled-select option { background: #2e1b14; color: #f5ebe4; }
+
+    .code-input::placeholder { color: var(--text-muted); font-weight: 400; letter-spacing: .3px; }
+
+    .input-row { display: flex; gap: 12px; margin-top: 16px; }
+    .input-row .code-input { flex: 1; min-width: 0; }
+
     .reveal-btn {
-      padding: 14px 26px;
-      border: none;
-      border-radius: 40px;
+      padding: 14px 28px;
+      border: none; border-radius: 40px;
       background: linear-gradient(135deg, var(--accent), var(--gold));
       color: #1a0e0a;
       font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.2s;
-      box-shadow: 0 6px 18px rgba(212,149,106,0.3);
-      white-space: nowrap;
-      width: auto;
+      font-size: 14px; font-weight: 700;
+      letter-spacing: .8px;
+      cursor: pointer; white-space: nowrap;
+      transition: transform .15s, box-shadow .2s;
+      box-shadow: 0 6px 20px rgba(212,149,106,.25);
     }
-    .reveal-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(212,149,106,0.5);
-    }
-    .status {
-      margin-top: 16px;
-      padding: 10px 16px;
-      border-radius: 40px;
-      font-size: 15px;
-      font-weight: 500;
-      display: none;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .status.ok {
-      display: block;
-      background: rgba(122,196,154,0.1);
-      border: 1px solid rgba(122,196,154,0.3);
-      color: #b0e0b0;
-    }
-    .status.err {
-      display: block;
-      background: rgba(212,106,106,0.1);
-      border: 1px solid rgba(212,106,106,0.3);
-      color: #ffb0b0;
-    }
-    .code-helper {
-      margin-top: 12px;
-      font-size: 13.5px;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-    .code-helper i {
-      margin-right: 4px;
-      color: var(--gold);
-    }
+    .reveal-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(212,149,106,.4); }
+    .reveal-btn i { margin-right: 6px; }
 
-    /* ----- PERSONAL LETTER ----- */
-    .letter-container {
-      margin-top: 24px;
-      perspective: 800px;
+    .code-hint { margin-top: 14px; font-size: 13.5px; font-style: italic; color: var(--text-muted); line-height: 1.6; }
+    .code-hint i { color: var(--gold); margin-right: 4px; }
+
+    .status {
+      margin-top: 16px; padding: 11px 18px;
+      border-radius: 40px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 500;
+      display: none;
+      animation: fadeUp .3s ease;
+    }
+    .status.ok { display: block; background: var(--ok-bg); border: 1px solid var(--ok-border); color: var(--ok); }
+    .status.err { display: block; background: var(--err-bg); border: 1px solid var(--err-border); color: var(--err); }
+
+    .letter-reveal {
+      margin-top: 24px; perspective: 900px;
       display: none;
     }
-    .letter-container.show {
-      display: block;
-      animation: letterAppear 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
-    }
-    @keyframes letterAppear {
-      from { opacity: 0; transform: rotateX(-6deg) translateY(16px) scale(0.96); }
-      to { opacity: 1; transform: rotateX(0) translateY(0) scale(1); }
-    }
+    .letter-reveal.show { display: block; animation: letterIn .7s var(--transition) forwards; }
+    @keyframes letterIn { from { opacity:0; transform:rotateX(-6deg) translateY(16px) scale(.97); } to { opacity:1; transform:rotateX(0) translateY(0) scale(1); } }
+
     .personal-letter {
       background: var(--letter-bg);
       border-radius: 18px;
-      padding: 24px 20px;
-      position: relative;
-      border-left: 6px solid var(--accent);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      padding: clamp(22px,3.5vw,32px);
+      position: relative; overflow: hidden;
+      box-shadow: var(--shadow-soft);
     }
-    .letter-to {
+    .personal-letter::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 5px; background: linear-gradient(180deg, var(--accent), var(--gold)); }
+
+    .pl-to {
       font-family: 'Caveat', cursive;
-      font-size: 24px;
+      font-size: clamp(22px, 3.5vw, 26px);
       font-weight: 700;
-      color: var(--accent-deep);
-      margin-bottom: 12px;
+      color: var(--letter-accent);
+      margin-bottom: 14px; margin-left: 8px;
     }
-    .letter-body {
+    .pl-body {
       font-family: 'Caveat', cursive;
-      font-size: 20px;
-      line-height: 1.65;
+      font-size: clamp(18px, 3vw, 21px);
+      line-height: 1.7;
       color: var(--letter-text);
       white-space: pre-wrap;
-      opacity: 0;
-      animation: textFadeIn 0.8s ease 0.2s forwards;
       word-break: break-word;
+      margin-left: 8px;
     }
-    @keyframes textFadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    .letter-seal {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px dashed rgba(61,43,31,0.2);
-    }
-    .seal-icon {
-      width: 32px; height: 32px;
-      background: linear-gradient(135deg, var(--accent), var(--gold));
-      border-radius: 50%;
-      display: flex;
-      align-items: center; justify-content: center;
-      color: #1a0e0a;
-      font-size: 14px;
-    }
-    .seal-text {
-      font-family: 'Caveat', cursive;
-      color: var(--letter-muted);
-      font-size: 16px;
-    }
+    .pl-body span { opacity: 0; animation: typeReveal 0.2s forwards; }
+    @keyframes typeReveal { from { opacity: 0; } to { opacity: 1; } }
 
-    /* ----- PRINT BUTTON ----- */
-    .print-wrapper {
-      margin-top: 16px;
-      text-align: center;
-      display: none;
+    .pl-footer {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 20px; padding-top: 16px;
+      border-top: 1px dashed rgba(61,43,31,.15);
+      margin-left: 8px;
+      flex-wrap: wrap;
     }
-    .print-btn {
+    .pl-seal { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--gold)); display: flex; align-items: center; justify-content: center; color: #1a0e0a; font-size: 13px; }
+    .pl-seal-text { font-family: 'Caveat', cursive; color: var(--letter-muted); font-size: 15px; }
+
+    .copy-btn, .speak-btn, .download-btn, .share-btn {
+      display: inline-flex; align-items: center; gap: 6px;
       background: transparent;
-      border: 1px solid rgba(212,149,106,0.4);
-      color: var(--text-muted);
-      padding: 10px 26px;
-      border-radius: 40px;
+      border: 1px solid rgba(176,104,56,.25);
+      color: var(--letter-muted);
+      padding: 7px 16px; border-radius: 40px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      transition: 0.2s;
+      font-size: 12px; cursor: pointer;
+      transition: .2s;
     }
-    .print-btn:hover {
-      border-color: var(--accent);
-      color: var(--gold);
-      background: rgba(212,149,106,0.05);
+    .copy-btn:hover, .speak-btn:hover, .download-btn:hover, .share-btn:hover { border-color: var(--letter-accent); color: var(--letter-accent); }
+    .copy-btn.copied { border-color: var(--ok); color: var(--ok); }
+
+    .btn-group {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-left: auto;
     }
 
-    /* ----- CONTINUE BUTTON ----- */
-    .continue-wrapper {
-      margin-top: 20px;
-      text-align: center;
+    .actions-row {
+      margin-top: 22px;
+      display: flex; flex-wrap: wrap; gap: 12px;
+      justify-content: center;
+      position: relative; z-index: 1;
       display: none;
     }
-    .continue-wrapper.show { display: block; }
-    .continue-btn {
-      padding: 14px 36px;
-      border: none;
-      border-radius: 40px;
+    .actions-row.show { display: flex; }
+
+    .btn-continue {
+      padding: 14px 36px; border: none; border-radius: 40px;
       background: linear-gradient(135deg, var(--gold), var(--accent));
       color: #1a0e0a;
       font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-      letter-spacing: 2px;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(232,193,122,0.4);
-      transition: 0.2s;
-      width: 100%;
-      max-width: 300px;
+      font-weight: 700; font-size: 15px;
+      letter-spacing: 1.5px; cursor: pointer;
+      box-shadow: 0 6px 20px var(--gold-glow);
+      transition: .2s;
     }
-    .continue-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(232,193,122,0.6);
-    }
+    .btn-continue:hover { transform: translateY(-2px); box-shadow: 0 10px 30px var(--gold-glow); }
 
-    .back-to-envelope {
-      margin-top: 24px;
-      text-align: center;
-      opacity: 0;
-      animation: fadeInUp 0.7s ease 0.9s forwards;
-    }
-    .restart-btn {
+    .btn-ghost {
+      padding: 12px 24px; border-radius: 40px;
       background: transparent;
-      border: 1px solid rgba(212,149,106,0.4);
+      border: 1px solid rgba(212,149,106,.3);
       color: var(--text-muted);
-      padding: 10px 26px;
-      border-radius: 40px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      transition: 0.2s;
+      font-size: 13px; letter-spacing: 1px;
+      cursor: pointer; transition: .2s;
     }
-    .restart-btn:hover {
-      border-color: var(--accent);
+    .btn-ghost:hover { border-color: var(--accent); color: var(--gold); }
+
+    /* ----- FAMILY TREE (corrected birth order with Maiguru Fou) ----- */
+    .family-tree {
+      margin-top: 32px;
+      padding: 20px 16px;
+      background: var(--bg-code);
+      border-radius: 18px;
+      border: 1px solid var(--gold-dim);
+      opacity: 0; animation: fadeUp .6s ease .7s forwards;
+    }
+    .tree-title {
+      font-family: 'Caveat', cursive;
+      font-size: 24px;
       color: var(--gold);
-      background: rgba(212,149,106,0.05);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .tree-memorial {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-align: center;
+      font-style: italic;
+    }
+    .tree-grid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .tree-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px 24px;
+    }
+    .tree-node {
+      display: flex; flex-direction: column; align-items: center;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+    }
+    .tree-icon {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      color: #1a0e0a;
+      margin-bottom: 4px;
+      position: relative;
+    }
+    .tree-icon .passed {
+      position: absolute;
+      bottom: -2px; right: -2px;
+      font-size: 14px;
+    }
+    .tree-name {
+      font-weight: 600;
+    }
+    .tree-name small {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: 4px;
     }
 
-    /* ----- SCENE 3 – FINALE ----- */
-    .finale-container {
+    /* ----- SCENE 3 — FINALE ----- */
+    .finale {
       text-align: center;
-      max-width: 600px;
-      width: 100%;
+      max-width: 620px; width: 100%;
       margin: 20px 0 40px;
     }
-    .finale-heart {
-      font-size: clamp(80px, 20vw, 120px);
-      animation: heartBeat 1.4s ease-in-out infinite;
-      display: inline-block;
-      filter: drop-shadow(0 0 40px rgba(232,193,122,0.4));
-      color: var(--gold);
-      margin-bottom: 16px;
-    }
-    @keyframes heartBeat {
-      0%, 100% { transform: scale(1); }
-      15% { transform: scale(1.2); }
-      30% { transform: scale(1); }
-      45% { transform: scale(1.1); }
-      60% { transform: scale(1); }
-    }
-    .finale-text {
-      font-family: 'Great Vibes', cursive;
-      font-size: clamp(38px, 10vw, 72px);
-      background: linear-gradient(135deg, var(--gold), var(--accent), var(--gold));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
-      opacity: 0;
-      animation: fadeInUp 1s ease 0.3s forwards;
-      word-break: break-word;
-    }
-    .finale-message {
-      font-size: 20px;
+    .finale-heart-wrap { font-size: clamp(72px, 18vw, 110px); line-height: 1; margin-bottom: 12px; display: inline-block; animation: heartBeat 1.4s ease-in-out infinite; filter: drop-shadow(0 0 40px var(--gold-glow)); }
+    @keyframes heartBeat { 0%,100% { transform:scale(1); } 14% { transform:scale(1.18); } 28% { transform:scale(1); } 42% { transform:scale(1.1); } 56% { transform:scale(1); } }
+    .finale-title { font-family: 'Great Vibes', cursive; font-size: clamp(36px, 10vw, 68px); background: linear-gradient(135deg, var(--gold), var(--accent), var(--gold)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.15; opacity: 0; animation: fadeUp .9s ease .2s forwards; }
+    .finale-title + .finale-title { font-size: clamp(30px, 7.5vw, 50px); margin-top: -4px; animation-delay: .35s; }
+    .finale-msg { font-size: clamp(17px, 2.5vw, 20px); color: var(--text-muted); font-style: italic; max-width: 480px; margin: 22px auto 0; line-height: 1.7; padding: 0 12px; opacity: 0; animation: fadeUp .9s ease .5s forwards; }
+
+    .blessing { margin: 28px auto; max-width: 500px; background: var(--gold-dim); border: 1px solid rgba(232,193,122,.18); border-radius: 20px; padding: clamp(18px, 3vw, 28px); opacity: 0; animation: fadeUp .9s ease .65s forwards; }
+    .blessing-label { font-family: 'Caveat', cursive; font-size: 22px; color: var(--gold); margin-bottom: 8px; }
+    .blessing-verse { font-size: 17px; font-style: italic; color: var(--text); line-height: 1.75; }
+    .blessing-ref { font-family: 'Caveat', cursive; font-size: 20px; color: var(--gold); margin-top: 4px; }
+    .blessing-shona { margin-top: 14px; font-family: 'Great Vibes', cursive; font-size: 22px; color: var(--accent); }
+
+    .daily-scripture {
+      margin-top: 16px;
+      font-size: 15px;
       color: var(--text-muted);
       font-style: italic;
-      max-width: 460px;
-      margin: 20px auto 0;
-      opacity: 0;
-      animation: fadeInUp 1s ease 0.7s forwards;
-      padding: 0 10px;
-    }
-    .blessing-box {
-      background: rgba(212,149,106,0.1);
-      border-radius: 20px;
-      padding: 20px;
-      margin: 20px 0;
-      border: 1px solid rgba(232,193,122,0.2);
-      opacity: 0;
-      animation: fadeInUp 1s ease 0.9s forwards;
-    }
-    .blessing-title {
-      font-family: 'Caveat', cursive;
-      font-size: 22px;
-      color: var(--gold);
-      margin-bottom: 8px;
-    }
-    .blessing-verse {
-      font-size: 18px;
-      font-style: italic;
-      color: var(--text-light);
-    }
-    .blessing-shona {
-      font-size: 20px;
-      font-family: 'Great Vibes';
-      color: var(--accent);
-      margin-top: 12px;
-    }
-    .guestbook-box {
-      margin-top: 20px;
-      width: 100%;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      opacity: 0;
-      animation: fadeInUp 1s ease 1.1s forwards;
-    }
-    .guestbook-label {
-      font-size: 16px;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-    .guestbook-input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 20px;
-      background: rgba(20,12,8,0.6);
-      border: 1.5px solid rgba(212,149,106,0.3);
-      color: var(--text-light);
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 17px;
-      resize: vertical;
-    }
-    .whatsapp-btn {
-      margin-top: 12px;
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 50px;
-      background: linear-gradient(135deg, #25D366, #128C7E);
-      color: white;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .whatsapp-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(37,211,102,0.3);
-    }
-    .finale-sub {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      color: var(--gold);
-      letter-spacing: 2px;
-      margin-top: 30px;
-      opacity: 0;
-      animation: fadeInUp 1s ease 1.3s forwards;
+      border-top: 1px solid var(--gold-dim);
+      padding-top: 12px;
     }
 
-    /* ----- PETAL BURST ----- */
-    .petal-burst {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      pointer-events: none;
-      overflow: hidden;
+    .guestbook { max-width: 420px; width: 100%; margin: 0 auto; opacity: 0; animation: fadeUp .9s ease .8s forwards; }
+    .guestbook-label { font-size: 16px; color: var(--text-muted); margin-bottom: 12px; }
+    .guestbook-label i { color: var(--accent); }
+    .guestbook-textarea { width: 100%; padding: 14px 16px; border-radius: 18px; background: var(--bg-code); border: 1.5px solid rgba(212,149,106,.22); color: var(--text); font-family: 'Cormorant Garamond', serif; font-size: 17px; resize: vertical; outline: none; min-height: 60px; transition: border-color .2s; }
+    .guestbook-textarea:focus { border-color: var(--accent); }
+    .guestbook-textarea::placeholder { color: var(--text-muted); }
+
+    .wa-btn { margin-top: 12px; width: 100%; padding: 14px; border: none; border-radius: 40px; background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 15px; letter-spacing: .8px; cursor: pointer; transition: .2s; }
+    .wa-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(37,211,102,.3); }
+
+    .finale-sign { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--gold); letter-spacing: 2px; margin-top: 32px; opacity: 0; animation: fadeUp .9s ease 1s forwards; }
+
+    .music-toggle {
+      position: fixed; bottom: 20px; right: 20px;
+      z-index: 1000;
+      background: var(--bg-card);
+      border: 1px solid var(--gold-dim);
+      border-radius: 40px;
+      padding: 10px 18px;
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text-muted);
+      backdrop-filter: blur(4px);
     }
+    .music-btn {
+      background: transparent;
+      border: none;
+      color: var(--gold);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .petals-layer { position: fixed; inset: 0; z-index: 100; pointer-events: none; overflow: hidden; }
     .petal {
       position: absolute;
-      width: var(--petal-size, 14px);
-      height: var(--petal-size, 14px);
-      background: var(--petal-color, #d4956a);
       border-radius: 50% 0 50% 50%;
       opacity: 0;
-      animation: petalFall var(--petal-dur, 3s) ease forwards;
+      animation: petalDrop var(--pdur,2.8s) ease forwards;
     }
-    @keyframes petalFall {
-      0% { opacity: 0.9; transform: translate(0,0) rotate(0deg) scale(1); }
-      100% { opacity: 0; transform: translate(var(--dx,100px), var(--dy,400px)) rotate(var(--dr,360deg)) scale(0.3); }
+    @keyframes petalDrop { 0% { opacity:.85; transform:translate(0,0) rotate(0) scale(1); } 100% { opacity:0; transform:translate(var(--px,80px),var(--py,350px)) rotate(var(--pr,300deg)) scale(.25); } }
+
+    @media (max-width: 520px) {
+      .input-row { flex-direction: column; }
+      .reveal-btn { width: 100%; justify-content: center; display: flex; align-items: center; }
+      .actions-row { flex-direction: column; align-items: center; }
+      .btn-continue, .btn-ghost { width: 100%; text-align: center; }
+      .pl-footer { flex-wrap: wrap; }
+      .btn-group { margin-left: 0; width: 100%; justify-content: space-between; }
     }
 
-    /* ----- PRINT STYLES – clean letter only ----- */
-    @media print {
-      body { 
-        background: white !important; 
-        color: black !important; 
-      }
-      .starfield, .hearts-container, .flash-overlay,
-      #scene1, #scene3, .scene1-hint,
-      .code-section, .family-tags,
-      .continue-wrapper, .back-to-envelope {
-        display: none !important;
-      }
-      #scene2 {
-        position: static !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        overflow: visible !important;
-        background: transparent !important;
-        padding: 0 !important;
-      }
-      .letter-card {
-        box-shadow: none !important;
-        border: none !important;
-        background: transparent !important;
-        padding: 0 !important;
-        margin: 0 !important;
-      }
-      .personal-letter {
-        box-shadow: none !important;
-        border-left: 6px solid #d4956a !important;
-        background: white !important;
-        color: black !important;
-        padding: 20px !important;
-      }
-      .letter-body {
-        color: black !important;
-      }
-      .letter-to {
-        color: #b8734a !important;
-      }
-      .print-wrapper {
-        display: none !important;
-      }
-    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--accent-deep); border-radius: 5px; }
 
-    /* ----- MOBILE OPTIMIZATIONS ----- */
-    @media (max-width: 480px) {
-      .scene {
-        padding: 12px 12px 25px;
-      }
-      .letter-card {
-        padding: 20px 16px;
-      }
-      .input-group {
-        flex-direction: column;
-      }
-      .reveal-btn {
-        width: 100%;
-      }
-      .code-input {
-        font-size: 16px;
-        padding: 12px 16px;
-      }
-      select.code-input {
-        font-size: 16px;
-      }
-      .scene1-hint {
-        font-size: 20px;
-      }
-      .continue-btn {
-        max-width: 100%;
-      }
-    }
-
-    @media (max-height: 600px) {
-      .envelope-wrapper {
-        margin-top: 10px;
-      }
-    }
-
-    ::-webkit-scrollbar {
-      width: 4px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--accent-deep);
-      border-radius: 4px;
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
 <body>
 
-  <!-- BACKGROUND -->
-  <div class="starfield" id="starfield"></div>
-  <div class="hearts-container" id="heartsContainer"></div>
-  <div class="flash-overlay" id="flashOverlay"></div>
+  <!-- ─── BACKGROUND ─── -->
+  <div class="bg-layer" id="bgLayer"></div>
+  <div class="hearts-layer" id="heartsLayer"></div>
+  <div class="scene-flash" id="sceneFlash"></div>
+  <div class="toast" id="toast"></div>
 
-  <!-- SCENE 1 – ENVELOPE -->
-  <div class="scene active" id="scene1">
-    <div class="envelope-wrapper" id="envelopeWrapper" role="button" tabindex="0">
-      <div class="envelope">
-        <div class="envelope-flap"></div>
-        <div class="envelope-heart"><i class="fas fa-heart"></i></div>
-        <div class="envelope-seal">sealed with gratitude</div>
-      </div>
-    </div>
-    <p class="scene1-hint">Tap the envelope to open your message</p>
+  <!-- Ambient Music (silent by default) -->
+  <audio id="ambientAudio" loop preload="metadata" style="display: none;">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8e7c5c1d9.mp3?filename=soft-piano-100-bpm-121529.mp3" type="audio/mpeg">
+  </audio>
+  <div class="music-toggle">
+    <span><i class="fas fa-music"></i> Ambient</span>
+    <button class="music-btn" id="musicBtn" aria-label="Toggle music">
+      <i class="fas fa-volume-mute"></i>
+    </button>
   </div>
 
-  <!-- SCENE 2 – LETTER & CODE REVEAL -->
+  <!-- Personalized Welcome Overlay -->
+  <div class="welcome-overlay" id="welcomeOverlay">
+    <div class="welcome-message" id="welcomeMessage"></div>
+    <div class="welcome-sub">❤️</div>
+  </div>
+
+  <!-- ═══ SCENE 1 — ENVELOPE ═══ -->
+  <div class="scene active" id="scene1">
+    <div class="env-wrap" id="envWrap" role="button" tabindex="0" aria-label="Open envelope">
+      <div class="envelope">
+        <div class="env-paper"></div>
+        <div class="env-flap"></div>
+        <div class="env-seal">
+          <span class="env-seal-letter">M</span>
+        </div>
+        <div class="env-label">sealed with gratitude</div>
+      </div>
+    </div>
+    <p class="s1-hint">Tap the envelope to open</p>
+  </div>
+
+  <!-- ═══ SCENE 2 — LETTER + CODE ═══ -->
   <div class="scene" id="scene2">
     <div class="letter-card">
-      <div class="letter-ornament">✿ ✦ ✿</div>
-      <div class="letter-name">With Gratitude</div>
-      <div class="letter-divider"></div>
+      <div class="lc-ornament">✿ &nbsp; ✦ &nbsp; ✿</div>
+      <div class="lc-title">With Gratitude</div>
+      <div class="lc-divider"></div>
 
-      <!-- MASIMBA FAMILY MESSAGE -->
-      <div class="gratitude-intro">
-        <p style="margin-bottom: 14px;">To the Masimba Family — thank you. We have seen the sacrifices, the prayers, the support, the guidance and the love that carried us through hard seasons.</p>
-        <p style="margin-bottom: 14px;">This is from both of us — <strong>Garry and Pinkie</strong> — saying: we are aware of everything you have done for us, and we have not forgotten.</p>
-        <p><strong>Gogo would be happy and proud.</strong> We love you and we are grateful.</p>
+      <!-- Time‑based greeting -->
+      <div class="greeting" id="greeting"></div>
+
+      <!-- Language toggle -->
+      <div class="lang-toggle">
+        <span style="color: var(--text-muted);">🌍</span>
+        <button id="langEnBtn" class="lang-btn active">English</button>
+        <button id="langSnBtn" class="lang-btn">Shona</button>
       </div>
 
-      <div class="family-tags">
+      <!-- Intro text – English version (default) -->
+      <div id="introEn">
+        <p class="intro-text">To the Masimba Family — thank you. We have seen the sacrifices, the prayers, the support, the guidance and the love that carried us through hard seasons.</p>
+        <p class="intro-text">This is from both of us — <strong>Garry &amp; Pinkie</strong> — saying: we are aware of everything you have done for us, and we have not forgotten.</p>
+        <p class="intro-text"><strong>Gogo would be happy and proud.</strong> We love you and we are grateful.</p>
+      </div>
+      <!-- Shona version (hidden by default) -->
+      <div id="introSn" style="display: none;">
+        <p class="intro-text">Kumhuri yeMasimba — tinotenda. Taona zvibayiro, minamato, rutsigiro, kutungamirwa uye rudo rwakatiburitsa mumwaka yakaoma.</p>
+        <p class="intro-text">Izvi zvinobva kwatiri tiri vaviri — <strong>Garry naPinkie</strong> — tichitaura kuti: tinozviziva zvose zvamakatiitira, uye hatina kukanganwa.</p>
+        <p class="intro-text"><strong>Gogo angadai akafara uye achadada.</strong> Tinokudai uye tine kutenda.</p>
+      </div>
+
+      <div class="tags">
         <span class="tag"><i class="fas fa-heart"></i> Appreciation</span>
-        <span class="tag"><i class="fas fa-pray"></i> Gratitude</span>
-        <span class="tag"><i class="fas fa-users"></i> Masimba</span>
+        <span class="tag"><i class="fas fa-hands-praying"></i> Gratitude</span>
+        <span class="tag"><i class="fas fa-people-group"></i> Masimba</span>
         <span class="tag"><i class="fas fa-lock"></i> Personal</span>
       </div>
 
-      <!-- CODE SECTION with DROPDOWN – does NOT auto-fill code -->
+      <!-- Code section -->
       <div class="code-section">
-        <div class="code-label"><i class="fas fa-key"></i> YOUR PERSONAL CODE</div>
-        
-        <!-- DROPDOWN: choose name (just a reference – code must be typed manually) -->
-        <div style="margin-bottom: 16px;">
-          <label for="nameSelect" style="display: block; font-size: 13px; color: var(--gold); letter-spacing: 1.5px; margin-bottom: 8px; font-family: 'DM Sans', sans-serif;">
-            <i class="fas fa-user" style="margin-right: 6px;"></i> Who are you?
-          </label>
-          <select id="nameSelect" class="code-input" style="width: 100%;">
-            <option value="" disabled selected>– select your name (for reference) –</option>
-            <option value="MAMA">Mama</option>
-            <option value="MAMAMAGGIE">Mama Mai Maggie</option>
-            <option value="MAMAJUNI">Mama Mai Juni</option>
-            <option value="NYASHA">Sekuru Nyasha</option>
-            <option value="EDDIE">Sekuru Eddie</option>
-            <option value="MAXWELL">Sekuru Maxwell</option>
-            <option value="LONNIE">Sekuru Lonnie</option>
-            <option value="KUDA">Sekuru Kuda</option>
-          </select>
+        <div class="code-heading"><i class="fas fa-key"></i> Your Personal Code</div>
+
+        <label class="field-label" for="nameSelect">
+          <i class="fas fa-user"></i> Who are you?
+        </label>
+        <select id="nameSelect" class="styled-select">
+          <option value="" disabled selected>— select your name —</option>
+          <option value="MAMA">Mama</option>
+          <option value="MAMAMAGGIE">Mama Mai Maggie</option>
+          <option value="MAMAJUNI">Mama Mai Juni</option>
+          <option value="NYASHA">Sekuru Nyasha</option>
+          <option value="EDDIE">Sekuru Eddie</option>
+          <option value="MAXWELL">Sekuru Maxwell</option>
+          <option value="LONNIE">Sekuru Lonnie</option>
+          <option value="KUDA">Sekuru Kuda</option>
+        </select>
+
+        <div class="input-row">
+          <input class="code-input" id="codeInput" placeholder="e.g. LONNIE-8D4X" autocomplete="off" spellcheck="false">
+          <button class="reveal-btn" id="revealBtn"><i class="fas fa-envelope-open-text"></i> Open</button>
         </div>
 
-        <div class="input-group">
-          <input class="code-input" id="codeInput" placeholder="e.g. LONNIE-8D4X" autocomplete="off" spellcheck="false">
-          <button class="reveal-btn" id="revealBtn"><i class="fas fa-envelope-open-text"></i> OPEN</button>
-        </div>
-        <div class="code-helper">
-          <i class="fas fa-question-circle"></i> Don’t have your code? Please message Garry and I’ll send it to you privately ❤️
-        </div>
+        <p class="code-hint">
+          <i class="fas fa-circle-question"></i>
+          Don't have your code? Message Garry privately and I'll send it to you.
+        </p>
+
         <div id="status" class="status"></div>
       </div>
 
-      <!-- PERSONAL LETTER (revealed after valid code) -->
-      <div class="letter-container" id="letterContainer">
+      <!-- Revealed letter -->
+      <div class="letter-reveal" id="letterReveal">
         <div class="personal-letter">
-          <div class="letter-to" id="letterTo"></div>
-          <div class="letter-body" id="letterBody"></div>
-          
-          <!-- AUDIO PLAYER – COMMENTED OUT (ready for later) -->
-          <!-- 
-          <div class="audio-player-wrapper" id="audioPlayerContainer" style="display: none;">
-            <audio id="audioPlayer" controls>
-              <source src="" type="audio/mpeg">
-            </audio>
-            <div class="audio-label"><i class="fas fa-headphones"></i> Voice message from Garry & Pinkie</div>
-          </div>
-          -->
-
-          <div class="letter-seal">
-            <div class="seal-icon">✧</div>
-            <span class="seal-text">written with love</span>
-          </div>
-
-          <!-- PRINT BUTTON -->
-          <div class="print-wrapper" id="printWrapper">
-            <button class="print-btn" id="printBtn">
-              <i class="fas fa-print"></i> print / save as PDF
-            </button>
+          <div class="pl-to" id="plTo"></div>
+          <div class="pl-body" id="plBody"></div>
+          <div class="pl-footer">
+            <div class="pl-seal">✧</div>
+            <span class="pl-seal-text">written with love</span>
+            <div class="btn-group">
+              <button class="copy-btn" id="copyBtn" title="Copy message">
+                <i class="fas fa-copy"></i> <span id="copyLabel">Copy</span>
+              </button>
+              <button class="speak-btn" id="speakBtn" title="Read aloud">
+                <i class="fas fa-volume-up"></i> Speak
+              </button>
+              <button class="download-btn" id="downloadBtn" title="Download letter">
+                <i class="fas fa-download"></i> PDF
+              </button>
+              <button class="share-btn" id="shareBtn" title="Share link">
+                <i class="fas fa-share-alt"></i> Share
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- CONTINUE BUTTON (leads to Scene 3) -->
-      <div class="continue-wrapper" id="continueWrapper">
-        <button class="continue-btn" id="toFinaleBtn">
-          <i class="fas fa-star"></i> Continue
-        </button>
+      <!-- Actions -->
+      <div class="actions-row" id="actionsRow">
+        <button class="btn-continue" id="toFinaleBtn"><i class="fas fa-star"></i> &nbsp;Continue</button>
+        <button class="btn-ghost" id="backBtn1"><i class="fas fa-arrow-rotate-left"></i> &nbsp;Start over</button>
       </div>
 
-      <div class="back-to-envelope">
-        <button class="restart-btn" id="restartFromLetterBtn"><i class="fas fa-redo"></i> back to envelope</button>
+      <!-- Animated Family Tree – corrected birth order with Maiguru Fou (passed) -->
+      <div class="family-tree" id="familyTree">
+        <div class="tree-title">🌳 Masimba Family Tree</div>
+        <div class="tree-memorial">
+          <i class="fas fa-dove"></i> In loving memory of Gogo, Sekuru & Maiguru Fou — forever in our hearts <i class="fas fa-dove"></i>
+        </div>
+        <div class="tree-grid">
+          <!-- Grandparents (both passed) -->
+          <div class="tree-row">
+            <div class="tree-node">
+              <div class="tree-icon">
+                <i class="fas fa-crown"></i>
+                <span class="passed">🕊️</span>
+              </div>
+              <span class="tree-name">Gogo</span>
+            </div>
+            <div class="tree-node">
+              <div class="tree-icon">
+                <i class="fas fa-crown"></i>
+                <span class="passed">🕊️</span>
+              </div>
+              <span class="tree-name">Sekuru</span>
+            </div>
+          </div>
+          <!-- Children in exact birth order (1st–3rd) -->
+          <div class="tree-row">
+            <div class="tree-node"><div class="tree-icon"><i class="fas fa-female"></i></div><span class="tree-name">Mama Mai East</span><small>1st</small></div>
+            <div class="tree-node"><div class="tree-icon"><i class="fas fa-male"></i></div><span class="tree-name">Sekuru Eddie</span><small>2nd</small></div>
+            <div class="tree-node">
+              <div class="tree-icon">
+                <i class="fas fa-female"></i>
+                <span class="passed">🕊️</span>
+              </div>
+              <span class="tree-name">Maiguru Fou</span><small>3rd</small>
+            </div>
+          </div>
+          <!-- Children 4th–6th -->
+          <div class="tree-row">
+            <div class="tree-node"><div class="tree-icon"><i class="fas fa-female"></i></div><span class="tree-name">Mama Mai Maggie</span><small>4th</small></div>
+            <div class="tree-node"><div class="tree-icon"><i class="fas fa-female"></i></div><span class="tree-name">Mama (Mai Garry)</span><small>5th</small></div>
+            <div class="tree-node"><div class="tree-icon"><i class="fas fa-male"></i></div><span class="tree-name">Sekuru Maxwell</span><small>6th</small></div>
+          </div>
+          <!-- Children 7th–10th -->
+          <div class="tree-row">
+            <div class="tree-node"><div class="tree-icon"><i class="fas fa-female"></i></div><span class="tree-name">Mama Mai Juni</span><small>7th</small></div>
+            <div class="tree-node"><div class="tree-icon"><i class="fas fa-male"></i></div><span class="tree-name">Sekuru Nyasha</span><small>8th</small></div>
+            <div class="tree-node"><div class="tree-icon"><i class="fas fa-male"></i></div><span class="tree-name">Sekuru Lonnie</span><small>9th</small></div>
+            <div class="tree-node"><div class="tree-icon"><i class="fas fa-male"></i></div><span class="tree-name">Sekuru Kuda</span><small>10th</small></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- SCENE 3 – GRAND FINALE with BLESSING & WHATSAPP -->
+  <!-- ═══ SCENE 3 — FINALE ═══ -->
   <div class="scene" id="scene3">
-    <div class="finale-container">
-      <div class="finale-heart">❤️</div>
-      <div class="finale-text">Thank You</div>
-      <div class="finale-text" style="font-size: clamp(32px,7vw,52px); margin-top: -10px;">Our Family</div>
-      <div class="finale-message">
+    <div class="finale">
+      <div class="finale-heart-wrap">❤️</div>
+      <div class="finale-title">Thank You</div>
+      <div class="finale-title">Our Family</div>
+      <p class="finale-msg">
         Every prayer, every sacrifice, every silent act of love — we carry it with us.
-      </div>
+      </p>
 
-      <!-- FAMILY BLESSING -->
-      <div class="blessing-box">
-        <div class="blessing-title">A Family Blessing</div>
+      <div class="blessing">
+        <div class="blessing-label">A Family Blessing</div>
         <div class="blessing-verse">
-          “May the Lord bless you and keep you, Masimba Family.<br>
-          May His face shine upon you and give you peace.”<br>
-          <span style="font-family: 'Caveat'; font-size: 22px; color: var(--gold);">— Numbers 6:24–26</span>
+          "May the Lord bless you and keep you, Masimba Family.<br>
+          May His face shine upon you and give you peace."
         </div>
-        <div class="blessing-shona">
-          Tinotenda Mwari. Gogo vangafara nekudada.
-        </div>
+        <div class="blessing-ref">— Numbers 6:24–26</div>
+        <div class="blessing-shona">Tinotenda Mwari. Gogo vangafara nekudada.</div>
+        <!-- Daily rotating scripture -->
+        <div class="daily-scripture" id="dailyScripture"></div>
       </div>
 
-      <!-- WHATSAPP GUESTBOOK -->
-      <div class="guestbook-box">
+      <!-- Enhanced "Write Back" with name field -->
+      <div class="guestbook">
         <div class="guestbook-label">
-          <i class="fas fa-heart" style="color: var(--accent);"></i> Leave a blessing or reply
+          <i class="fas fa-heart"></i> Write back
         </div>
-        <textarea id="guestbookMessage" class="guestbook-input" rows="2" placeholder="Write your message... (e.g. Thank you, Garry & Pinkie! 🙏)"></textarea>
-        <button id="whatsappSendBtn" class="whatsapp-btn">
-          <i class="fab fa-whatsapp"></i> Send via WhatsApp
+        <input type="text" id="replyName" class="guestbook-textarea" style="margin-bottom: 10px;" placeholder="Your name (optional)">
+        <textarea id="guestbookMsg" class="guestbook-textarea" rows="2"
+          placeholder="Write your message… (e.g. Thank you, Garry & Pinkie! 🙏)"></textarea>
+        <button class="wa-btn" id="waBtn">
+          <i class="fab fa-whatsapp"></i> &nbsp;Send via WhatsApp
         </button>
       </div>
 
-      <div class="finale-sub">with love, Garry & Pinkie</div>
-      <button class="restart-btn" id="restartFromFinaleBtn" style="margin-top: 36px;"><i class="fas fa-envelope"></i> open again</button>
+      <div class="finale-sign">with love, Garry &amp; Pinkie</div>
+      <button class="btn-ghost" id="backBtn2" style="margin-top:28px;">
+        <i class="fas fa-envelope"></i> &nbsp;Open again
+      </button>
     </div>
   </div>
 
@@ -944,306 +881,433 @@
     (function() {
       "use strict";
 
-      // ----- STARS -----
-      function createStars() {
-        var container = document.getElementById("starfield");
-        var count = Math.min(70, Math.floor(window.innerWidth * window.innerHeight / 9000));
-        for (var i = 0; i < count; i++) {
-          var star = document.createElement("div");
-          star.className = "star";
-          var size = Math.random() * 2.4 + 1.2;
-          star.style.width = size + "px";
-          star.style.height = size + "px";
-          star.style.left = Math.random() * 100 + "%";
-          star.style.top = Math.random() * 100 + "%";
-          star.style.setProperty("--dur", (Math.random() * 3 + 2) + "s");
-          star.style.animationDelay = Math.random() * 5 + "s";
-          container.appendChild(star);
-        }
+      /* ========== DARK / LIGHT MODE ========== */
+      function applyColorScheme(dark) {
+        if (dark) document.documentElement.classList.add("dark");
+        else document.documentElement.classList.remove("dark");
       }
-      createStars();
+      if (window.matchMedia) {
+        applyColorScheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function(e) {
+          applyColorScheme(e.matches);
+        });
+      } else applyColorScheme(true);
 
-      // ----- HEARTS -----
-      var heartSymbols = ["❤️", "🧡", "💛", "🤎", "💖"];
-      var heartColors = ["#d4956a", "#e8c17a", "#c49a52", "#b8734a", "#d9b48f"];
+      /* ========== STARS ========== */
+      (function initStars() {
+        var layer = document.getElementById("bgLayer");
+        var n = Math.min(60, Math.floor(window.innerWidth * window.innerHeight / 12000));
+        for (var i = 0; i < n; i++) {
+          var s = document.createElement("div");
+          s.className = "star";
+          var sz = (Math.random() * 2.2 + 1) + "px";
+          s.style.width = sz; s.style.height = sz;
+          s.style.left = (Math.random() * 100) + "%";
+          s.style.top = (Math.random() * 100) + "%";
+          s.style.setProperty("--dur", (Math.random() * 3 + 2) + "s");
+          s.style.animationDelay = (Math.random() * 5) + "s";
+          layer.appendChild(s);
+        }
+      })();
+
+      /* ========== FLOATING HEARTS ========== */
+      var heartChars = ["❤️", "🧡", "💛", "🤎", "💖"];
       function spawnHeart() {
-        var container = document.getElementById("heartsContainer");
-        if (container.children.length > 22) return;
-        var heart = document.createElement("div");
-        heart.className = "floating-heart";
-        heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-        heart.style.left = Math.random() * 100 + "%";
-        heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
-        var s = Math.random() * 18 + 14;
-        heart.style.setProperty("--size", s + "px");
-        heart.style.setProperty("--dur", (Math.random() * 6 + 7) + "s");
-        heart.style.setProperty("--delay", "0s");
-        heart.style.setProperty("--rot", (Math.random() * 60 - 30) + "deg");
-        heart.style.setProperty("--peak-opacity", (Math.random() * 0.4 + 0.3).toFixed(2));
-        container.appendChild(heart);
-        heart.addEventListener("animationend", function() { heart.remove(); });
+        var c = document.getElementById("heartsLayer");
+        if (c.children.length > 18) return;
+        var h = document.createElement("div");
+        h.className = "fheart";
+        h.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+        h.style.left = (Math.random() * 100) + "%";
+        h.style.fontSize = (Math.random() * 16 + 12) + "px";
+        h.style.setProperty("--dur", (Math.random() * 7 + 8) + "s");
+        h.style.setProperty("--delay", "0s");
+        h.style.setProperty("--rot", (Math.random() * 50 - 25) + "deg");
+        h.style.setProperty("--peak", (Math.random() * .3 + .25).toFixed(2));
+        c.appendChild(h);
+        h.addEventListener("animationend", function() { h.remove(); });
       }
-      setInterval(spawnHeart, 900);
+      setInterval(spawnHeart, 1100);
 
-      // ----- PETAL BURST -----
+      /* ========== TOAST ========== */
+      var toastTimer;
+      function showToast(msg) {
+        var t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function() { t.classList.remove("show"); }, 2800);
+      }
+
+      /* ========== PETAL BURST ========== */
       function burstPetals(x, y, count) {
-        var container = document.createElement("div");
-        container.className = "petal-burst";
-        document.body.appendChild(container);
-        var petalColors = ["#d4956a", "#e8c17a", "#c49a52", "#b8734a", "#e2b28b"];
+        var wrap = document.createElement("div");
+        wrap.className = "petals-layer";
+        document.body.appendChild(wrap);
+        var colors = ["#d4956a","#e8c17a","#c49a52","#b06838","#d9b48f"];
         for (var i = 0; i < count; i++) {
-          var petal = document.createElement("div");
-          petal.className = "petal";
-          petal.style.left = x + "px";
-          petal.style.top = y + "px";
-          var angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.6;
-          var dist = Math.random() * 180 + 100;
-          petal.style.setProperty("--dx", (Math.cos(angle) * dist) + "px");
-          petal.style.setProperty("--dy", (Math.sin(angle) * dist - 100) + "px");
-          petal.style.setProperty("--dr", (Math.random() * 720 - 360) + "deg");
-          petal.style.setProperty("--petal-size", (Math.random() * 12 + 8) + "px");
-          petal.style.setProperty("--petal-color", petalColors[Math.floor(Math.random() * petalColors.length)]);
-          petal.style.setProperty("--petal-dur", (Math.random() * 1.5 + 1.8) + "s");
-          container.appendChild(petal);
+          var p = document.createElement("div");
+          p.className = "petal";
+          p.style.left = x + "px";
+          p.style.top = y + "px";
+          var angle = (Math.PI * 2 * i) / count + (Math.random() - .5) * .5;
+          var dist = Math.random() * 200 + 80;
+          p.style.setProperty("--px", (Math.cos(angle) * dist) + "px");
+          p.style.setProperty("--py", (Math.sin(angle) * dist - 90) + "px");
+          p.style.setProperty("--pr", (Math.random() * 720 - 360) + "deg");
+          p.style.setProperty("--pdur", (Math.random() * 1.5 + 2) + "s");
+          var sz = (Math.random() * 10 + 8) + "px";
+          p.style.width = sz; p.style.height = sz;
+          p.style.background = colors[Math.floor(Math.random() * colors.length)];
+          wrap.appendChild(p);
         }
-        setTimeout(function() { container.remove(); }, 3500);
+        setTimeout(function() { wrap.remove(); }, 4000);
       }
 
-      // ----- CODE MAPPING (used only for reference – dropdown does NOT auto-fill) -----
-      var CODE_BY_PERSON = {
-        MAMA: "MAMA-4H7Q",
-        MAMAMAGGIE: "MAMAMAGGIE-4P9Q",
-        MAMAJUNI: "MAMAJUNI-8T5M",
-        NYASHA: "NYASHA-3F7K",
-        EDDIE: "EDDIE-6Q1N",
-        MAXWELL: "MAXWELL-5M7R",
-        LONNIE: "LONNIE-8D4X",
-        KUDA: "KUDA-2J6V"
-      };
+      /* ========== CONFETTI ========== */
+      function popConfetti() {
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        confetti({ particleCount: 50, spread: 40, origin: { x: 0.2, y: 0.6 } });
+        confetti({ particleCount: 50, spread: 40, origin: { x: 0.8, y: 0.6 } });
+      }
 
-      // ----- MESSAGES (short codes) -----
-      var MESSAGES = {
-        "MAMA-4H7Q": {
-          name: "Mama",
-          message: "Mama,\n\nYou are my pillar of strength. You have sacrificed so much — everything — for me to be here today. Without you, I honestly don’t know what or who I would be.\n\nYour prayers, your support, your love, the way you never gave up on me… it has carried me through life. I see it. I feel it. I honour it.\n\nThank you, Mama. I love you with my whole heart.\n\nWith love,\nGarry"
-        },
-        "MAMAMAGGIE-4P9Q": {
-          name: "Mama Mai Maggie",
-          message: "Mama Mai Maggie,\n\nYou have done more for me than I could ever count — and I mean that.\n\nYour prayers, your support, your presence… you have been a pillar. Especially during the time I was sick, you stood strong for me. You carried weight that many people did not even see, and you did it with love.\n\nI thank God for you. I appreciate you deeply, and I will never forget what you have done for me.\n\nWith love and gratitude,\nGarry"
-        },
-        "MAMAJUNI-8T5M": {
-          name: "Mama Mai Juni",
-          message: "Mama Mai Juni,\n\nI am honestly lost for words, because I don’t know how to fully express what you have done for me.\n\nDuring my sickness, and during the time I was facing legal troubles, you have been there — every step of the way. You didn’t get tired. You didn’t step back. You stood with me, and you kept standing.\n\nI will never forget that. I appreciate you more than I can say, and I pray God rewards you for the love you have shown me.\n\nWith deep love and gratitude,\nGarry"
-        },
-        "NYASHA-3F7K": {
-          name: "Sekuru Nyasha",
-          message: "Sekuru Nyasha,\n\nThank you for being more than an uncle to me — you have been a mentor, a protector, and a steady hand in moments that could have broken me.\n\nI will never forget how you taught me chess and fueled my enthusiasm for it. Chess didn’t just become a game — it shaped how I think, how I plan, and how I stay calm under pressure. You molded my mind in a way that has stayed with me.\n\nI also remember the first device you gave me back in 2016 — the yellow Nokia Lumia 520. That phone is a whole memory. I remember transferring contacts from it into a notebook, writing them one by one. It sounds small, but it is unforgettable to me — because it reminds me of your kindness and how you were always pushing me forward.\n\nAnd Sekuru… during the era of my legal troubles, you stood with me in a legal capacity when it mattered most. I know what that meant. I know how lucky I am to have you. I’m grateful beyond words.\n\nTo your wife and your kids — you are all such a blessing. I thank God for you as a family, and I’m truly proud and grateful to belong to you.\n\nWith deep respect and love,\nGarry"
-        },
-        "EDDIE-6Q1N": {
-          name: "Sekuru Eddie",
-          message: "Sekuru Eddie Baba,\n\nThank you for being a father figure to me and to Pinkie. Your guidance towards life has been unmatched — not just advice, but real direction, real protection, and real care.\n\nYou have been strong for us, and you have shown us what it means to stand firm, to be disciplined, and to move through life with character. We may not always say it enough, but we feel it deeply: you have been there.\n\nWe love you Sekuru Bhuddie Eddie Baba, and we are grateful.\n\nWith respect and love,\nGarry & Pinkie"
-        },
-        "MAXWELL-5M7R": {
-          name: "Sekuru Maxwell",
-          message: "Sekuru Maxwell,\n\nI want to sincerely thank you for everything you have done for me, especially in supporting my education.\n\nI have always looked up to you intellectually — the brains, the discipline, the intelligence, the way you think. Knowing that you are a statistician by profession, a businessman, and a holder of an MBA Finance, has always inspired me. You made excellence feel possible — not as a theory, but as something real.\n\nThank you for helping me with my school bills at varsity. That support carried me further than you may ever fully realize. You were investing in my future, and I do not take it lightly.\n\nI am grateful, Sekuru. Truly.\n\nWith respect and love,\nGarry"
-        },
-        "LONNIE-8D4X": {
-          name: "Sekuru Lonnie",
-          message: "Sekuru Lonnie,\n\nYou will always be my favourite uncle — and I say that with a full heart.\n\nWe have so many beautiful memories: the road trips, the activities, the games we used to play… those moments were not “just fun”, they were a kind of love. You made childhood and family feel safe, exciting, and full of laughter.\n\nI appreciate you, your wife, and your two beautiful girls — little Peppa Pig and Mama Goose. You gave us memories that will stay with us for life, and that is a gift that cannot be measured.\n\nThank you for being you, Sekuru.\n\nWith love,\nGarry"
-        },
-        "KUDA-2J6V": {
-          name: "Sekuru Kuda",
-          message: "Sekuru Kuda,\n\nGrowing up, you have been the best — and you still are.\n\nThank you for the love, the support, and the way you have always been good to me. I appreciate you, and I’m also looking forward to spending more time with you — creating more memories, laughing more, and building that bond even stronger.\n\nThank you Sekuru. I’m grateful.\n\nWith love,\nGarry"
-        }
-      };
-
-      function normalizeCode(s) { return (s || '').trim().toUpperCase(); }
-
-      // DOM elements
-      var codeInput = document.getElementById('codeInput');
-      var revealBtn = document.getElementById('revealBtn');
-      var statusEl = document.getElementById('status');
-      var letterContainer = document.getElementById('letterContainer');
-      var letterTo = document.getElementById('letterTo');
-      var letterBody = document.getElementById('letterBody');
-      var continueWrapper = document.getElementById('continueWrapper');
-      var toFinaleBtn = document.getElementById('toFinaleBtn');
-      var nameSelect = document.getElementById('nameSelect');
-      var printWrapper = document.getElementById('printWrapper');
-      var printBtn = document.getElementById('printBtn');
-
-      // ----- DROPDOWN: purely informational – does NOT fill the code -----
-      if (nameSelect) {
-        nameSelect.addEventListener('change', function() {
-          // No auto-fill – user must type the code manually
-          // Optional: show a hint that they need to type the code
-          var selectedName = this.options[this.selectedIndex]?.text;
-          if (selectedName && !selectedName.includes('select')) {
-            // You could briefly display a message, but we keep it silent
+      /* ========== SCENE MANAGEMENT ========== */
+      var currentScene = 1;
+      function goToScene(num) {
+        var flash = document.getElementById("sceneFlash");
+        flash.classList.add("on");
+        setTimeout(function() {
+          document.getElementById("scene" + currentScene).classList.remove("active");
+          document.getElementById("scene" + num).classList.add("active");
+          document.getElementById("scene" + num).scrollTop = 0;
+          currentScene = num;
+          flash.classList.remove("on");
+          if (num === 3) {
+            var heart = document.querySelector(".finale-heart-wrap");
+            if (heart) {
+              var r = heart.getBoundingClientRect();
+              burstPetals(r.left + r.width / 2, r.top + r.height / 2, 36);
+              popConfetti();
+            }
           }
-        });
+        }, 350);
       }
 
-      // ----- PRINT BUTTON -----
-      if (printBtn) {
-        printBtn.addEventListener('click', function() {
-          window.print();
-        });
+      /* ========== ENVELOPE ========== */
+      var envWrap = document.getElementById("envWrap");
+      function openEnvelope(e) {
+        if (envWrap.classList.contains("opened")) return;
+        envWrap.classList.add("opened");
+        var cx = e ? (e.clientX || window.innerWidth / 2) : window.innerWidth / 2;
+        var cy = e ? (e.clientY || window.innerHeight / 2) : window.innerHeight / 2;
+        burstPetals(cx, cy, 22);
+        setTimeout(function() { goToScene(2); }, 850);
       }
+      envWrap.addEventListener("click", openEnvelope);
+      envWrap.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEnvelope(); }
+      });
 
-      // ----- RATE LIMITING (prevents brute force guessing) -----
+      /* ========== TIME‑BASED GREETING ========== */
+      function setGreeting() {
+        var h = new Date().getHours();
+        var g = "Good evening";
+        if (h < 12) g = "Good morning";
+        else if (h < 18) g = "Good afternoon";
+        document.getElementById("greeting").textContent = g + ", Masimba Family 🌿";
+      }
+      setGreeting();
+
+      /* ========== DAILY SCRIPTURE ========== */
+      var verses = [
+        "“The Lord your God is with you, the Mighty Warrior who saves.” — Zephaniah 3:17",
+        "“I can do all this through him who gives me strength.” — Philippians 4:13",
+        "“Be strong and courageous. Do not be afraid.” — Joshua 1:9",
+        "“Let the peace of Christ rule in your hearts.” — Colossians 3:15",
+        "“We love because he first loved us.” — 1 John 4:19",
+        "“Your word is a lamp for my feet, a light on my path.” — Psalm 119:105"
+      ];
+      function setDailyVerse() {
+        var day = new Date().getDate();
+        var idx = day % verses.length;
+        document.getElementById("dailyScripture").innerHTML = verses[idx];
+      }
+      setDailyVerse();
+
+      /* ========== LANGUAGE TOGGLE ========== */
+      var langEn = true;
+      function setLanguage(toEn) {
+        var introEn = document.getElementById("introEn");
+        var introSn = document.getElementById("introSn");
+        if (toEn) {
+          introEn.style.display = "block";
+          introSn.style.display = "none";
+          document.getElementById("langEnBtn").classList.add("active");
+          document.getElementById("langSnBtn").classList.remove("active");
+        } else {
+          introEn.style.display = "none";
+          introSn.style.display = "block";
+          document.getElementById("langSnBtn").classList.add("active");
+          document.getElementById("langEnBtn").classList.remove("active");
+        }
+        langEn = toEn;
+      }
+      document.getElementById("langEnBtn").addEventListener("click", function() { setLanguage(true); });
+      document.getElementById("langSnBtn").addEventListener("click", function() { setLanguage(false); });
+
+      /* ========== MESSAGES ========== */
+      var MESSAGES = {
+        "MAMA-4H7Q": { name: "Mama", message: "Mama,\n\nYou are my pillar of strength. You have sacrificed so much — everything — for me to be here today. Without you, I honestly don’t know what or who I would be.\n\nYour prayers, your support, your love, the way you never gave up on me… it has carried me through life. I see it. I feel it. I honour it.\n\nThank you, Mama. I love you with my whole heart.\n\nWith love,\nGarry" },
+        "MAMAMAGGIE-4P9Q": { name: "Mama Mai Maggie", message: "Mama Mai Maggie,\n\nYou have done more for me than I could ever count — and I mean that.\n\nYour prayers, your support, your presence… you have been a pillar. Especially during the time I was sick, you stood strong for me. You carried weight that many people did not even see, and you did it with love.\n\nI thank God for you. I appreciate you deeply, and I will never forget what you have done for me.\n\nWith love and gratitude,\nGarry" },
+        "MAMAJUNI-8T5M": { name: "Mama Mai Juni", message: "Mama Mai Juni,\n\nI am honestly lost for words, because I don’t know how to fully express what you have done for me.\n\nDuring my sickness, and during the time I was facing legal troubles, you have been there — every step of the way. You didn’t get tired. You didn’t step back. You stood with me, and you kept standing.\n\nI will never forget that. I appreciate you more than I can say, and I pray God rewards you for the love you have shown me.\n\nWith deep love and gratitude,\nGarry" },
+        "NYASHA-3F7K": { name: "Sekuru Nyasha", message: "Sekuru Nyasha,\n\nThank you for being more than an uncle to me — you have been a mentor, a protector, and a steady hand in moments that could have broken me.\n\nI will never forget how you taught me chess and fuelled my enthusiasm for it. Chess didn’t just become a game — it shaped how I think, how I plan, and how I stay calm under pressure. You moulded my mind in a way that has stayed with me.\n\nI also remember the first device you gave me back in 2016 — the yellow Nokia Lumia 520. That phone is a whole memory. I remember transferring contacts from it into a notebook, writing them one by one. It sounds small, but it is unforgettable to me — because it reminds me of your kindness and how you were always pushing me forward.\n\nAnd Sekuru… during the era of my legal troubles, you stood with me in a legal capacity when it mattered most. I know what that meant. I know how lucky I am to have you. I’m grateful beyond words.\n\nTo your wife and your kids — you are all such a blessing. I thank God for you as a family, and I’m truly proud and grateful to belong to you.\n\nWith deep respect and love,\nGarry" },
+        "EDDIE-6Q1N": { name: "Sekuru Eddie", message: "Sekuru Eddie Baba,\n\nThank you for being a father figure to me and to Pinkie. Your guidance towards life has been unmatched — not just advice, but real direction, real protection, and real care.\n\nYou have been strong for us, and you have shown us what it means to stand firm, to be disciplined, and to move through life with character. We may not always say it enough, but we feel it deeply: you have been there.\n\nWe love you Sekuru Bhuddie Eddie Baba, and we are grateful.\n\nWith respect and love,\nGarry & Pinkie" },
+        "MAXWELL-5M7R": { name: "Sekuru Maxwell", message: "Sekuru Maxwell,\n\nI want to sincerely thank you for everything you have done for me, especially in supporting my education.\n\nI have always looked up to you intellectually — the brains, the discipline, the intelligence, the way you think. Knowing that you are a statistician by profession, a businessman, and a holder of an MBA Finance, has always inspired me. You made excellence feel possible — not as a theory, but as something real.\n\nThank you for helping me with my school bills at varsity. That support carried me further than you may ever fully realize. You were investing in my future, and I do not take it lightly.\n\nI am grateful, Sekuru. Truly.\n\nWith respect and love,\nGarry" },
+        "LONNIE-8D4X": { name: "Sekuru Lonnie", message: "Sekuru Lonnie,\n\nYou will always be my favourite uncle — and I say that with a full heart.\n\nWe have so many beautiful memories: the road trips, the activities, the games we used to play… those moments were not “just fun”, they were a kind of love. You made childhood and family feel safe, exciting, and full of laughter.\n\nI appreciate you, your wife, and your two beautiful girls — little Peppa Pig and Mama Goose. You gave us memories that will stay with us for life, and that is a gift that cannot be measured.\n\nThank you for being you, Sekuru.\n\nWith love,\nGarry" },
+        "KUDA-2J6V": { name: "Sekuru Kuda", message: "Sekuru Kuda,\n\nGrowing up, you have been the best — and you still are.\n\nThank you for the love, the support, and the way you have always been good to me. I appreciate you, and I’m also looking forward to spending more time with you — creating more memories, laughing more, and building that bond even stronger.\n\nThank you Sekuru. I’m grateful.\n\nWith love,\nGarry" }
+      };
+
+      function normalizeCode(s) { return (s || "").trim().toUpperCase(); }
+
+      /* ========== DOM refs ========== */
+      var codeInput = document.getElementById("codeInput");
+      var revealBtn = document.getElementById("revealBtn");
+      var statusEl = document.getElementById("status");
+      var letterReveal = document.getElementById("letterReveal");
+      var plTo = document.getElementById("plTo");
+      var plBody = document.getElementById("plBody");
+      var actionsRow = document.getElementById("actionsRow");
+      var copyBtn = document.getElementById("copyBtn");
+      var copyLabel = document.getElementById("copyLabel");
+      var speakBtn = document.getElementById("speakBtn");
+      var downloadBtn = document.getElementById("downloadBtn");
+      var shareBtn = document.getElementById("shareBtn");
+      var welcomeOverlay = document.getElementById("welcomeOverlay");
+      var welcomeMsg = document.getElementById("welcomeMessage");
+
+      /* ========== RATE LIMITING ========== */
       var attempts = 0;
       var lockUntil = 0;
 
       function showStatus(text, kind) {
-        statusEl.className = 'status ' + kind;
+        statusEl.className = "status " + kind;
         statusEl.textContent = text;
       }
 
       function clearReveal() {
-        statusEl.className = 'status';
-        statusEl.textContent = '';
-        letterContainer.classList.remove('show');
-        letterTo.textContent = '';
-        letterBody.textContent = '';
-        if (continueWrapper) continueWrapper.classList.remove('show');
-        if (printWrapper) printWrapper.style.display = 'none';
+        statusEl.className = "status";
+        statusEl.textContent = "";
+        letterReveal.classList.remove("show");
+        plTo.textContent = "";
+        plBody.textContent = "";
+        actionsRow.classList.remove("show");
+      }
+
+      /* ========== TYPEWRITER EFFECT ========== */
+      function typeWriter(element, text, delay = 35) {
+        element.innerHTML = "";
+        element.style.opacity = 1;
+        var words = text.split(/(\s+)/);
+        var index = 0;
+        function addWord() {
+          if (index < words.length) {
+            var span = document.createElement("span");
+            span.textContent = words[index];
+            element.appendChild(span);
+            index++;
+            setTimeout(addWord, delay);
+          }
+        }
+        addWord();
+      }
+
+      var currentMessage = "";
+      var currentName = "";
+
+      function showWelcome(name) {
+        welcomeMsg.textContent = "Welcome, " + name;
+        welcomeOverlay.classList.add("active");
+        burstPetals(window.innerWidth/2, window.innerHeight/2, 40);
+        popConfetti();
+        setTimeout(function() {
+          welcomeOverlay.classList.remove("active");
+        }, 2000);
       }
 
       function reveal() {
         var now = Date.now();
         if (now < lockUntil) {
-          var seconds = Math.ceil((lockUntil - now) / 1000);
-          showStatus('Too many wrong attempts. Please wait ' + seconds + ' seconds.', 'err');
+          var sec = Math.ceil((lockUntil - now) / 1000);
+          showStatus("Too many attempts. Please wait " + sec + " seconds.", "err");
           return;
         }
 
         clearReveal();
         var code = normalizeCode(codeInput.value);
-        if (!code) { 
-          showStatus('Please enter your code.', 'err'); 
-          return; 
-        }
+
+        if (!code) { showStatus("Please enter your code.", "err"); return; }
 
         var data = MESSAGES[code];
         if (!data) {
           attempts++;
           if (attempts >= 5) {
-            lockUntil = Date.now() + 30000; // 30 seconds lockout
+            lockUntil = Date.now() + 30000;
             attempts = 0;
-            showStatus('Too many wrong tries. Please wait 30 seconds.', 'err');
+            showStatus("Too many wrong tries. Please wait 30 seconds.", "err");
             return;
           }
-          showStatus('That code doesn’t match any message. Double-check and try again.', 'err');
+          showStatus("That code doesn’t match. Double-check and try again.", "err");
           return;
         }
 
-        // success – reset attempts
         attempts = 0;
+        currentMessage = data.message;
+        currentName = data.name;
 
-        showStatus('✓ Message unlocked', 'ok');
-        letterTo.textContent = 'For ' + data.name;
-        letterBody.textContent = data.message;
+        showWelcome(currentName);
 
-        letterContainer.classList.remove('show');
-        void letterContainer.offsetWidth;
-        letterContainer.classList.add('show');
-        letterBody.style.animation = 'none';
-        void letterBody.offsetWidth;
-        letterBody.style.animation = 'textFadeIn 0.8s ease 0.2s forwards';
+        showStatus("✓ Message unlocked", "ok");
 
-        if (continueWrapper) continueWrapper.classList.add('show');
-        if (printWrapper) printWrapper.style.display = 'block';
+        plTo.textContent = "For " + data.name;
+
+        typeWriter(plBody, data.message, 30);
+
+        letterReveal.classList.remove("show");
+        void letterReveal.offsetWidth;
+        letterReveal.classList.add("show");
+
+        actionsRow.classList.add("show");
+
+        setTimeout(function() { letterReveal.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, 200);
+
+        popConfetti();
       }
 
-      revealBtn.addEventListener('click', reveal);
-      codeInput.addEventListener('keydown', function(e) { 
-        if (e.key === 'Enter') reveal(); 
-      });
+      revealBtn.addEventListener("click", reveal);
+      codeInput.addEventListener("keydown", function(e) { if (e.key === "Enter") reveal(); });
 
-      // ----- SCENE MANAGEMENT (smooth transitions) -----
-      var currentScene = 1;
-      function transitionTo(sceneNum) {
-        var flash = document.getElementById("flashOverlay");
-        flash.classList.add("active");
-        setTimeout(function() {
-          document.getElementById("scene" + currentScene).classList.remove("active");
-          document.getElementById("scene" + sceneNum).classList.add("active");
-          currentScene = sceneNum;
-          flash.classList.remove("active");
-
-          if (sceneNum === 3) {
-            var el = document.querySelector(".finale-heart");
-            var rect = el ? el.getBoundingClientRect() : null;
-            if (rect) burstPetals(rect.left + rect.width/2, rect.top + rect.height/2, 42);
+      /* ========== COPY ========== */
+      copyBtn.addEventListener("click", function() {
+        if (!currentMessage) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(currentMessage).then(function() {
+            copyLabel.textContent = "Copied!";
+            copyBtn.classList.add("copied");
             setTimeout(function() {
-              var box = document.getElementById("guestbookMessage");
-              if (box) box.focus();
-            }, 600);
-          }
-        }, 380);
-      }
-
-      // Envelope click – open and transition to Scene 2
-      var envelopeWrapper = document.getElementById("envelopeWrapper");
-      envelopeWrapper.addEventListener("click", function(e) {
-        if (envelopeWrapper.classList.contains("opened")) return;
-        envelopeWrapper.classList.add("opened");
-        burstPetals(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2, 24);
-        setTimeout(function() { transitionTo(2); }, 800);
+              copyLabel.textContent = "Copy";
+              copyBtn.classList.remove("copied");
+            }, 2000);
+          });
+        } else { showToast("Could not copy — try selecting manually."); }
       });
-      envelopeWrapper.addEventListener("keydown", function(e) {
-        if (e.key === "Enter" || e.key === " ") { 
-          e.preventDefault(); 
-          envelopeWrapper.click(); 
+
+      /* ========== SPEAK (Web Speech API) ========== */
+      speakBtn.addEventListener("click", function() {
+        if (!currentMessage) { showToast("No message to read."); return; }
+        var utterance = new SpeechSynthesisUtterance(currentMessage);
+        utterance.rate = 0.9;
+        utterance.pitch = 0.9;
+        utterance.voice = speechSynthesis.getVoices().find(v => v.lang.includes("en") && v.name.includes("Google")) || null;
+        window.speechSynthesis.speak(utterance);
+      });
+
+      /* ========== DOWNLOAD PRINTABLE LETTER ========== */
+      downloadBtn.addEventListener("click", function() {
+        if (!currentMessage || !currentName) { showToast("Unlock a letter first."); return; }
+        var html = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Letter for ${currentName}</title>
+<style>
+  body { font-family: 'Caveat', cursive; padding: 2rem; max-width: 800px; margin: 0 auto; }
+  .letter { border-left: 6px solid #b06838; padding-left: 20px; }
+  .to { font-size: 24px; color: #b06838; margin-bottom: 16px; }
+  .body { font-size: 20px; line-height: 1.7; white-space: pre-wrap; }
+  .footer { margin-top: 30px; font-family: 'Great Vibes', cursive; font-size: 24px; color: #b8903e; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="letter">
+    <div class="to">For ${currentName}</div>
+    <div class="body">${currentMessage.replace(/\n/g, '<br>')}</div>
+    <div class="footer">with love, Garry & Pinkie</div>
+  </div>
+</body></html>`;
+        var blob = new Blob([html], {type: "text/html"});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = `letter-${currentName.replace(/\s+/g, '-')}.html`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("Letter downloaded (open in browser to print)");
+      });
+
+      /* ========== SHARE LINK (with code hash) ========== */
+      shareBtn.addEventListener("click", function() {
+        var code = normalizeCode(codeInput.value);
+        if (!code) { showToast("Enter a code first."); return; }
+        var url = window.location.href.split('#')[0] + '#' + code;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(url).then(() => showToast("Link copied (code included)"));
+        } else {
+          prompt("Copy this link:", url);
         }
       });
 
-      // Continue to Scene 3
-      if (toFinaleBtn) {
-        toFinaleBtn.addEventListener("click", function() { 
-          transitionTo(3); 
-        });
-      }
+      /* ========== AMBIENT MUSIC TOGGLE ========== */
+      var audio = document.getElementById("ambientAudio");
+      var musicBtn = document.getElementById("musicBtn");
+      var musicOn = false;
+      musicBtn.addEventListener("click", function() {
+        if (musicOn) {
+          audio.pause();
+          musicBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        } else {
+          audio.play().catch(e => showToast("Click again to start music"));
+          musicBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }
+        musicOn = !musicOn;
+      });
 
-      // ----- RESTART – smooth transition back to Scene 1 -----
-      function restartToEnvelope() {
-        // Reset envelope flap
-        envelopeWrapper.classList.remove("opened");
-        // Clear code input and any revealed letter
-        codeInput.value = '';
+      /* ========== CONTINUE TO FINALE ========== */
+      document.getElementById("toFinaleBtn").addEventListener("click", function() {
+        popConfetti();
+        goToScene(3);
+      });
+
+      /* ========== RESTART ========== */
+      function restart() {
+        envWrap.classList.remove("opened");
+        codeInput.value = "";
         clearReveal();
-        if (nameSelect) nameSelect.selectedIndex = 0;
-        // Smooth transition to Scene 1
-        transitionTo(1);
+        var sel = document.getElementById("nameSelect");
+        if (sel) sel.selectedIndex = 0;
+        goToScene(1);
+        window.speechSynthesis.cancel();
       }
+      document.getElementById("backBtn1").addEventListener("click", restart);
+      document.getElementById("backBtn2").addEventListener("click", restart);
 
-      document.getElementById("restartFromLetterBtn").addEventListener("click", restartToEnvelope);
-      document.getElementById("restartFromFinaleBtn").addEventListener("click", restartToEnvelope);
+      /* ========== ENHANCED WHATSAPP (with name) ========== */
+      document.getElementById("waBtn").addEventListener("click", function() {
+        var phone = "263771308790";
+        var nameField = document.getElementById("replyName");
+        var msgField = document.getElementById("guestbookMsg");
+        var name = nameField.value.trim();
+        var msg = msgField.value.trim();
+        var fullMsg = "";
+        if (name) fullMsg += `From: ${name}\n`;
+        if (msg) fullMsg += msg;
+        else fullMsg += "Thank you, Garry & Pinkie! Love and blessings from the Masimba Family ❤️";
+        var url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(fullMsg);
+        window.open(url, "_blank");
+      });
 
-      // ----- WHATSAPP GUESTBOOK – YOUR NUMBER IS SET -----
-      var whatsappBtn = document.getElementById('whatsappSendBtn');
-      var guestbookMsg = document.getElementById('guestbookMessage');
-      if (whatsappBtn) {
-        whatsappBtn.addEventListener('click', function() {
-          var phoneNumber = '263771308790'; // ✅ YOUR CORRECT NUMBER
-          if (phoneNumber.includes('x') || phoneNumber === '263xxxxxxxxx') {
-            alert("WhatsApp number not set yet. Please update it in the code.");
-            return;
-          }
-          var text = guestbookMsg.value.trim();
-          if (text === '') {
-            text = 'Thank you, Garry & Pinkie! Love and blessings from the Masimba Family ❤️';
-          }
-          var url = 'https://wa.me/' + phoneNumber + '?text=' + encodeURIComponent(text);
-          window.open(url, '_blank');
-        });
-      }
-
-      // URL hash prefill (optional)
+      /* ========== URL HASH AUTO-FILL ========== */
       if (location.hash && location.hash.length > 1) {
         codeInput.value = decodeURIComponent(location.hash.slice(1));
       }
+
     })();
   </script>
 </body>
